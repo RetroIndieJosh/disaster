@@ -23,7 +23,6 @@ public class Board : MonoBehaviour
     private void Start() {
         m_tileMap = new BoardTile[m_size, m_size];
         CreateTileButtons();
-        LinkTileButtons();
     }
 
     private void CreateTileButtons() {
@@ -31,25 +30,13 @@ public class Board : MonoBehaviour
         for (var y = 0; y < m_size; ++y) {
             for (var x = 0; x < m_size; ++x) {
                 m_tileMap[x, y] = Instantiate(m_tilePrefab, transform);
+                m_tileMap[x, y].name = $"Board Tile {x} {y}";
                 var rectTransform = m_tileMap[x, y].GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = pos;
                 pos.x += m_tileSize;
             }
             pos.x = 0;
             pos.y -= m_tileSize;
-        }
-    }
-
-    private void LinkTileButtons() {
-        for (var y = 0; y < m_size; ++y) {
-            for (var x = 0; x < m_size; ++x) {
-                var button = m_tileMap[x, y].GetComponent<Button>();
-                var tileX = x;
-                var tileY = y;
-                button.onClick.AddListener(() => {
-                    TurnManager.instance.ClickTile(tileX, tileY);
-                });
-            }
         }
     }
 }

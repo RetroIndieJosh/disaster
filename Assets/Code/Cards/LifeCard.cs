@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveCard : Card
+public class LifeCard : Card
 {
-    public override void Activate(int a_x, int a_y, PlayerColor a_color) {
-        TurnManager.instance.AddStone(a_x, a_y, a_color);
+    public override void Activate(BoardTile a_tile, Player a_player) {
+        a_tile.SetStone(a_player);
     }
 }

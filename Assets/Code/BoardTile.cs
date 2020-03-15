@@ -28,12 +28,35 @@ public enum Direction
 
 public class BoardTile : MonoBehaviour
 {
-    private Direction m_facing = Direction.None;
+    [SerializeField] private Image m_overlayImage = null;
 
-    private void Activate() {
+    Player m_controller = null;
+    Disaster m_disaster = null;
+
+    public bool IsClear => m_controller == null && m_disaster == null;
+
+    public void Clear() {
+        m_controller = null;
+        SetOverlay(null);
+    }
+
+    public void SetStone(Player a_player) {
+        Debug.Log($"Player {a_player} sets stone");
+        m_controller = a_player;
+        var color = a_player.Color;
+        var sprite = TurnManager.instance.GetStoneSprite(color);
+        SetOverlay(sprite);
     }
 
     private void Start() {
         var button = GetComponent<Button>();
+        button.onClick.AddListener(() => {
+            TurnManager.instance.ActivateCard(this);
+        });
+    }
+
+    private void SetOverlay(Sprite a_sprite) {
+        m_overlayImage.sprite = a_sprite;
+        m_overlayImage.enabled = a_sprite != null;
     }
 }
