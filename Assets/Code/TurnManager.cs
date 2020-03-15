@@ -8,13 +8,16 @@ public class TurnManager : MonoBehaviour
     public static TurnManager instance = null;
 
     [SerializeField] private List<Player> m_playerList = new List<Player>();
+
+    [Header("Game Settings")]
+    [SerializeField] private int m_handSize = 5;
     
     [Header("Sprites")]
     [SerializeField] private Sprite m_spriteStoneBlack = null;
     [SerializeField] private Sprite m_spriteStoneWhite = null;
 
     [Header("Prefabs")]
-    [SerializeField] private Button m_cardPrefab = null;
+    [SerializeField] private Card m_cardPrefab = null;
 
     private Player m_activePlayer = null;
     private Board m_board = null;
@@ -22,6 +25,9 @@ public class TurnManager : MonoBehaviour
     public Card ActiveCard {
         private get; set;
     }
+
+    public Card CardPrefab => m_cardPrefab;
+    public int HandSize => m_handSize;
 
     public void ActivateCard(BoardTile a_tile) {
         Debug.Log($"Activate card [{ActiveCard}] on tile [{a_tile}]");

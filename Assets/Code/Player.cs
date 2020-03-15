@@ -1,90 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public enum CardType
-{
-    None = 0x00,
-    Move = 0x01, // move up to two
-    Life = 0x02, // add one
-    Step = 0x04, // advance one
-    Spread = 0x08, // advance two
-    Fire = 0x0F,
-    Water = 0x10,
-    Plague = 0x11,
-    Wild = 0x12,
-    Reserved1 = 0x14,
-    Reserved2 = 0x18,
-    Reserved3 = 0x1F
-}
-
-public class Deck
-{
-    [SerializeField]
-    private bool m_debug = false;
-
-    [SerializeField]
-    private List<CardType> m_cardList = new List<CardType>();
-
-    public CardType this[int i] {
-        get {
-            if (m_cardList == null) {
-                Debug.LogError("Null card list");
-                return CardType.None;
-            }
-
-            if (i < 0 || i >= CardCount) {
-                Debug.LogError($"[Deck] Card index {i} invalid");
-                return CardType.None;
-            }
-            return m_cardList[i];
-        }
-        private set {
-            if (i < 0 || i >= CardCount) {
-                Debug.LogError($"[Deck] Card index {i} invalid");
-                return;
-            }
-
-            m_cardList[i] = value;
-        }
-    }
-
-    public int CardCount => m_cardList.Count;
-
-    public override string ToString() {
-        var str = "";
-        foreach (var card in m_cardList)
-            str += $"{card.ToString()}, ";
-        return str.Substring(0, str.Length - 2);
-    }
-
-    public int CountCardsOfType(CardType a_card) {
-        var count = 0;
-        foreach (var card in m_cardList)
-            if (card == a_card)
-                ++count;
-        return count;
-    }
-
-    public void Add(CardType a_card) {
-        m_cardList.Add(a_card);
-    }
-
-    public void Clear() {
-        m_cardList.Clear();
-    }
-
-    public CardType Draw(bool a_keep = false) {
-        var ret = m_cardList[0];
-        if (a_keep == false)
-            m_cardList.RemoveAt(0);
-        return ret;
-    }
-
-    public void Shuffle() {
-        Utility.Shuffle(m_cardList);
-    }
-}
+using UnityEngine.UI;
 
 public enum PlayerColor
 {
@@ -99,10 +16,21 @@ public class Player : MonoBehaviour
     public PlayerColor Color => m_color;
     private Deck m_deck = new Deck();
     private Deck m_hand = new Deck();
+    private Card[] m_handVisual = null;
 
-    private void DrawCards(int a_count) {
-        for (var i = 0; i < a_count; ++i)
-            m_hand.Add(m_deck.Draw());
+    private void DrawCards() {
+        var count = TurnManager.instance.HandSize - m_hand.CardCount;
+        for (var i = 0; i < count; ++i) {
+            var cardType = m_deck.Draw();
+            m_hand.Add(cardType);
+
+            for (var k = 0; k < m_handVisual.Length; ++k) {
+                if (m_handVisual[k].CardType == CardType.None) {
+                    m_handVisual[k].CardType = cardType;
+                    break;
+                }
+            }
+        }
     }
 
     private void Start() {
@@ -120,8 +48,23 @@ public class Player : MonoBehaviour
         m_deck.Add(CardType.Wild);
 
         m_deck.Shuffle();
-        DrawCards(5);
+        InitializeVisualHand();
 
+        DrawCards();
         Debug.Log($"Hand: {m_hand.ToString()}");
+    }
+
+    private void InitializeVisualHand() {
+        m_handVisual = new Card[TurnManager.instance.HandSize];
+        var pos = Vector2Int.zero;
+        var cardPrefab = TurnManager.instance.CardPrefab;
+        var cardWidth = Mathf.FloorToInt(cardPrefab.GetComponent<RectTransform>().rect.width);
+        for (var i = 0; i < TurnManager.instance.HandSize; ++i) {
+            var card = Instantiate(TurnManager.instance.CardPrefab, transform);
+            var rectTransform = card.GetComponent<RectTransform>();
+            rectTransform.anchoredPosition = pos;
+            pos.x += cardWidth;
+            m_handVisual[i] = card;
+        }
     }
 }
