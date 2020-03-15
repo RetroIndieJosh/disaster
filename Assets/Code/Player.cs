@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Card
+public enum CardType
 {
     None = 0x00,
     Move = 0x01, // move up to two
@@ -24,18 +24,18 @@ public class Deck
     private bool m_debug = false;
 
     [SerializeField]
-    private List<Card> m_cardList = new List<Card>();
+    private List<CardType> m_cardList = new List<CardType>();
 
-    public Card this[int i] {
+    public CardType this[int i] {
         get {
             if (m_cardList == null) {
                 Debug.LogError("Null card list");
-                return Card.None;
+                return CardType.None;
             }
 
             if (i < 0 || i >= CardCount) {
                 Debug.LogError($"[Deck] Card index {i} invalid");
-                return Card.None;
+                return CardType.None;
             }
             return m_cardList[i];
         }
@@ -58,7 +58,7 @@ public class Deck
         return str.Substring(0, str.Length - 2);
     }
 
-    public int CountCardsOfType(Card a_card) {
+    public int CountCardsOfType(CardType a_card) {
         var count = 0;
         foreach (var card in m_cardList)
             if (card == a_card)
@@ -66,7 +66,7 @@ public class Deck
         return count;
     }
 
-    public void Add(Card a_card) {
+    public void Add(CardType a_card) {
         m_cardList.Add(a_card);
     }
 
@@ -74,7 +74,7 @@ public class Deck
         m_cardList.Clear();
     }
 
-    public Card Draw(bool a_keep = false) {
+    public CardType Draw(bool a_keep = false) {
         var ret = m_cardList[0];
         if (a_keep == false)
             m_cardList.RemoveAt(0);
@@ -86,8 +86,17 @@ public class Deck
     }
 }
 
+public enum PlayerColor
+{
+    Black = 0x00,
+    White = 0x01
+}
+
 public class Player : MonoBehaviour
 {
+    [SerializeField] private PlayerColor m_color = PlayerColor.Black;
+
+    public PlayerColor Color => m_color;
     private Deck m_deck = new Deck();
     private Deck m_hand = new Deck();
 
@@ -98,17 +107,17 @@ public class Player : MonoBehaviour
 
     private void Start() {
         for (var i = 0; i < 4; ++i) {
-            m_deck.Add(Card.Move);
-            m_deck.Add(Card.Life);
-            m_deck.Add(Card.Step);
+            m_deck.Add(CardType.Move);
+            m_deck.Add(CardType.Life);
+            m_deck.Add(CardType.Step);
         }
         for (var i = 0; i < 2; ++i) {
-            m_deck.Add(Card.Fire);
-            m_deck.Add(Card.Water);
-            m_deck.Add(Card.Plague);
-            m_deck.Add(Card.Spread);
+            m_deck.Add(CardType.Fire);
+            m_deck.Add(CardType.Water);
+            m_deck.Add(CardType.Plague);
+            m_deck.Add(CardType.Spread);
         }
-        m_deck.Add(Card.Wild);
+        m_deck.Add(CardType.Wild);
 
         m_deck.Shuffle();
         DrawCards(5);

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum BoardTileState
 {
@@ -14,25 +15,25 @@ public enum BoardTileState
 
 public enum Direction
 {
-    None = 0,
-    East = 1,
-    North = 2,
-    Northeast = 3,
-    Northwest = 4,
-    South = 5,
-    Southeast = 6,
-    Southwest = 7,
-    West = 8
-}
-
-public enum PlayerColor {
-    None = 0,
-    Black = 1,
-    White = 2
+    None = 0x00,
+    East = 0x01,
+    North = 0x02,
+    South = 0x04,
+    West = 0x08,
+    Northeast = 0x02 + 0x01,
+    Northwest = 0x02 + 0x08,
+    Southeast = 0x04 + 0x01,
+    Southwest = 0x04 + 0x08
 }
 
 public class BoardTile : MonoBehaviour
 {
     private Direction m_facing = Direction.None;
-    private PlayerColor m_controller = PlayerColor.None;
+
+    private void Activate() {
+    }
+
+    private void Start() {
+        var button = GetComponent<Button>();
+    }
 }

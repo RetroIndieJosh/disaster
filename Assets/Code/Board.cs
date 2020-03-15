@@ -9,6 +9,16 @@ public class Board : MonoBehaviour
     [SerializeField] private BoardTile m_tilePrefab = null;
 
     private BoardTile[,] m_tileMap = null;
+    private int m_tileSize = 0;
+
+    public BoardTile GetTile(int a_tileX, int a_tileY) {
+        return m_tileMap[a_tileX, a_tileY];
+    }
+
+    private void Awake() {
+        var rect = m_tilePrefab.GetComponent<RectTransform>().rect;
+        m_tileSize = Mathf.FloorToInt(rect.width);
+    }
 
     private void Start() {
         m_tileMap = new BoardTile[m_size, m_size];
@@ -18,18 +28,15 @@ public class Board : MonoBehaviour
 
     private void CreateTileButtons() {
         var pos = Vector2Int.zero;
-        var tileRect = m_tilePrefab.GetComponent<RectTransform>().rect;
-        var tileWidth = Mathf.FloorToInt(tileRect.width);
-        var tileHeight = Mathf.FloorToInt(tileRect.height);
         for (var y = 0; y < m_size; ++y) {
             for (var x = 0; x < m_size; ++x) {
                 m_tileMap[x, y] = Instantiate(m_tilePrefab, transform);
                 var rectTransform = m_tileMap[x, y].GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = pos;
-                pos.x += tileHeight;
+                pos.x += m_tileSize;
             }
             pos.x = 0;
-            pos.y -= tileWidth;
+            pos.y -= m_tileSize;
         }
     }
 
@@ -37,6 +44,11 @@ public class Board : MonoBehaviour
         for (var y = 0; y < m_size; ++y) {
             for (var x = 0; x < m_size; ++x) {
                 var button = m_tileMap[x, y].GetComponent<Button>();
+                var tileX = x;
+                var tileY = y;
+                button.onClick.AddListener(() => {
+                    TurnManager.instance.ClickTile(tileX, tileY);
+                });
             }
         }
     }
