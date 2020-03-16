@@ -24,14 +24,14 @@ public class TurnManager : MonoBehaviour
         private get => m_activeCard;
         set {
             if( m_activeCard != null) {
-                m_activeCard.IsActive = false;
+                m_activeCard.IsCardActive = false;
                 if (m_activeCard == value) {
                     m_activeCard = null;
                     return;
                 }
             }
             m_activeCard = value;
-            m_activeCard.IsActive = true;
+            m_activeCard.IsCardActive = true;
         }
     }
 
@@ -67,6 +67,8 @@ public class TurnManager : MonoBehaviour
         ++m_turnIndex;
         if (m_turnIndex >= m_playerList.Count)
             m_turnIndex = 0;
+        Debug.Log($"{ActivePlayer}'s turn");
+        ActivePlayer.StartTurn();
     }
 
     private void Awake() {

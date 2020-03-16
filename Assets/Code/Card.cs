@@ -31,17 +31,17 @@ public class Card : MonoBehaviour
 
     Button m_button = null;
     private CardType m_type = CardType.None;
-    private bool m_isActive = false;
+    private bool m_isCardActive = false;
 
-    public bool IsActive {
-        get => m_isActive;
+    public bool IsCardActive {
+        get => m_isCardActive;
         set {
             var rectTrans = GetComponent<RectTransform>();
             var height = rectTrans.rect.height / 2;
             var pos = rectTrans.anchoredPosition;
-            m_isActive = value;
-            Debug.Log($"Set card {name} " + (m_isActive ? "active" : "inactive"));
-            pos.y = m_isActive ? Mathf.FloorToInt(height) / 2 : 0;
+            m_isCardActive = value;
+            Debug.Log($"Set card {name} " + (m_isCardActive ? "active" : "inactive"));
+            pos.y = m_isCardActive ? Mathf.FloorToInt(height) / 2 : 0;
             rectTrans.anchoredPosition = pos;
         }
     }
@@ -55,8 +55,11 @@ public class Card : MonoBehaviour
     }
 
     public virtual void Play(BoardTile a_tile) {
-        a_tile.SetStone(Owner);
-        m_type = CardType.None;
+        if (m_type == CardType.Life)
+            a_tile.SetStone(Owner);
+        IsCardActive = false;
+        CardType = CardType.None;
+        Owner.PlayedCard();
     }
 
     private void Awake() {
@@ -70,6 +73,7 @@ public class Card : MonoBehaviour
     }
 
     private void UpdateColor() {
+        gameObject.SetActive(true);
         var colors = m_button.colors;
         switch (m_type) {
         case CardType.Fire:
@@ -82,6 +86,7 @@ public class Card : MonoBehaviour
             colors.normalColor = Color.black;
             break;
         case CardType.None:
+            gameObject.SetActive(false);
             colors.normalColor = Color.white;
             break;
         case CardType.Plague:
@@ -91,7 +96,7 @@ public class Card : MonoBehaviour
             colors.normalColor = Color.gray;
             break;
         case CardType.Step:
-            colors.normalColor = Color.gray;
+            colors.normalColor = Color.white;
             break;
         case CardType.Water:
             colors.normalColor = Color.blue;
@@ -101,6 +106,5 @@ public class Card : MonoBehaviour
             break;
         }
         m_button.colors = colors;
-        Debug.Log($"Set card {CardType} color to {colors.normalColor}");
     }
 }

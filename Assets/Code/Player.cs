@@ -28,10 +28,13 @@ public class Player : MonoBehaviour
 
     public void StartTurn() {
         DrawCards();
+        if (m_isHuman == false)
+            TurnManager.instance.NextTurn();
     }
 
     private void DrawCards() {
-        var count = TurnManager.instance.HandSize - m_cardsPlayed;
+        var count = (m_cardsPlayed == 0) ? TurnManager.instance.HandSize : m_cardsPlayed;
+        Debug.Log($"Draw {count} cards");
         for (var i = 0; i < count; ++i) {
             var cardType = m_deck.Draw();
 
@@ -39,9 +42,11 @@ public class Player : MonoBehaviour
                 for (var k = 0; k < m_handVisual.Length; ++k) {
                     if (m_handVisual[k].CardType == CardType.None) {
                         m_handVisual[k].CardType = cardType;
+                        Debug.Log($"Drew {cardType} in visual slot {k}");
                         break;
-                    }
-                }
+                    } else
+                        Debug.Log($"Card {k} is {m_handVisual[k].CardType}");
+                } 
             }
         }
         m_cardsPlayed = 0;
