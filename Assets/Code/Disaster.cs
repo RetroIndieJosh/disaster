@@ -2,18 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Disaster : MonoBehaviour
+public enum DisasterType
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    Fire,
+    Plague,
+    Water
+}
+
+public enum Direction
+{
+    None = 0x00,
+    East = 0x01,
+    North = 0x02,
+    South = 0x04,
+    West = 0x08,
+    Northeast = 0x02 + 0x01,
+    Northwest = 0x02 + 0x08,
+    Southeast = 0x04 + 0x01,
+    Southwest = 0x04 + 0x08
+}
+
+public class Disaster
+{
+    public int Length => m_tileList.Count;
+    private BoardTile Head => m_tileList[0];
+    private BoardTile Tail => m_tileList[m_tileList.Count - 1];
+
+    private List<BoardTile> m_tileList = new List<BoardTile>();
+
+    public DisasterType DisasterType { get; } = DisasterType.Fire;
+    public Direction Direction {
+        set => Head.Direction = value;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public Disaster(DisasterType a_type, BoardTile m_startTile) {
+        DisasterType = a_type;
+        m_tileList.Add(m_startTile);
+    }
+
+    public void Advance() {
+        // add one past the head in its facing direction
     }
 }
 

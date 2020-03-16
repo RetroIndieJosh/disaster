@@ -9,21 +9,8 @@ public enum BoardTileState
     Black = 1,
     White = 2,
     Fire = 3,
-    Flood = 4,
+    Water = 4,
     Plague = 5
-}
-
-public enum Direction
-{
-    None = 0x00,
-    East = 0x01,
-    North = 0x02,
-    South = 0x04,
-    West = 0x08,
-    Northeast = 0x02 + 0x01,
-    Northwest = 0x02 + 0x08,
-    Southeast = 0x04 + 0x01,
-    Southwest = 0x04 + 0x08
 }
 
 public class BoardTile : GameElement
@@ -42,12 +29,10 @@ public class BoardTile : GameElement
     }
 
     private Player m_controller = null;
-    private Disaster m_disaster = null;
     private BoardTileState m_state = BoardTileState.Clear;
 
     public void Clear() {
         m_controller = null;
-        m_disaster = null;
         m_state = BoardTileState.Clear;
         SetOverlay(null);
     }
@@ -70,6 +55,56 @@ public class BoardTile : GameElement
     public bool HasAdjacentOrthogonalStone(Player a_player) {
         var state = (a_player.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.White;
         return Board.instance.CheckNeighborsOrthogonal(x, y, state) && m_state != state;
+    }
+
+    private Direction m_direction = Direction.None;
+    public Direction Direction {
+        set {
+            m_direction = value;
+            m_overlayImage.transform.rotation = Quaternion.identity;
+            if( m_direction == Direction.North)
+                m_overlayImage.transform.Rotate(Vector3.forward, 0f);
+            else if (m_direction == Direction.Northwest)
+                m_overlayImage.transform.Rotate(Vector3.forward, 45f);
+            else if( m_direction == Direction.West)
+                m_overlayImage.transform.Rotate(Vector3.forward, 90f);
+            else if (m_direction == Direction.Southwest)
+                m_overlayImage.transform.Rotate(Vector3.forward, 135f);
+            else if( m_direction == Direction.South)
+                m_overlayImage.transform.Rotate(Vector3.forward, 180f);
+            else if( m_direction == Direction.Southeast)
+                m_overlayImage.transform.Rotate(Vector3.forward, 225f);
+            else if( m_direction == Direction.East)
+                m_overlayImage.transform.Rotate(Vector3.forward, 270f);
+            else if( m_direction == Direction.Northeast)
+                m_overlayImage.transform.Rotate(Vector3.forward, 315f);
+        }
+    }
+
+    public BoardTile NextTile() {
+        var dx = 0;
+        var dy = 0;
+        if (m_direction == Direction.East || m_direction == Direction.Northeast || m_direction == Direction.Southeast)
+            dx = -1;
+        if (m_direction == Direction.West || m_direction == Direction.Northwest || m_direction == Direction.Southwest)
+            dx = 1;
+        if (m_direction == Direction.North || m_direction == Direction.Northeast || m_direction == Direction.Northwest)
+            dy = -1;
+        if (m_direction == Direction.South || m_direction == Direction.Southeast || m_direction == Direction.Southwest)
+            dy = 1;
+        return Board.instance.GetTile(x + dx, y + dy);
+    }
+
+    public void SetDisaster(Player a_player, DisasterType a_disaster) {
+        m_controller = a_player;
+        if (a_disaster == DisasterType.Fire)
+            State = BoardTileState.Fire;
+        else if (a_disaster == DisasterType.Plague)
+            State = BoardTileState.Plague;
+        else if (a_disaster == DisasterType.Water)
+            State = BoardTileState.Water;
+        var sprite = Board.instance.GetDisasterSprite(a_disaster);
+        SetOverlay(sprite);
     }
 
     public void SetStone(Player a_player) {

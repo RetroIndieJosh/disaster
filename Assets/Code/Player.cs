@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("All disasters plus Spread")] private int m_cardDisasterCount = 4;
 
     public PlayerColor Color => m_color;
+    public Disaster ActiveDisaster => m_disaster;
     public int Score {
         get => m_score;
         set {
@@ -35,6 +36,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    private Disaster m_disaster = null;
     private int m_score = 0;
     private Deck m_deck = new Deck();
     private Card[] m_handVisual = null;
@@ -49,6 +51,16 @@ public class Player : MonoBehaviour
     }
 
     private int m_cardsPlayed = 0;
+
+    public void CreateDisaster(DisasterType a_disaster, BoardTile a_tile) {
+        if (m_disaster != null) {
+            Debug.LogError("Tried to create disaster illegally");
+            return;
+        }
+        // TODO set direction
+        m_disaster = new Disaster(a_disaster, a_tile);
+        a_tile.SetDisaster(this, a_disaster);
+    }
 
     public void PlayedCard() {
         ++m_cardsPlayed;
@@ -109,10 +121,10 @@ public class Player : MonoBehaviour
         for (var i = 0; i < m_cardStepCount; ++i)
             m_deck.Add(CardType.Step);
         for (var i = 0; i < m_cardDisasterCount; ++i) {
-            m_deck.Add(CardType.Fire);
+            //m_deck.Add(CardType.Fire);
             m_deck.Add(CardType.Water);
-            m_deck.Add(CardType.Plague);
-            m_deck.Add(CardType.Spread);
+            //m_deck.Add(CardType.Plague);
+            //m_deck.Add(CardType.Spread);
         }
         for (var i = 0; i < m_cardWildCount; ++i)
             m_deck.Add(CardType.Wild);

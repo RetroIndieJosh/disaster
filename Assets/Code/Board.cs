@@ -18,6 +18,9 @@ public class Board : MonoBehaviour
     [SerializeField] private int m_playPerTurn = 2;
     
     [Header("Sprites")]
+    [SerializeField] private Sprite m_spriteDisasterFire = null;
+    [SerializeField] private Sprite m_spriteDisasterPlague = null;
+    [SerializeField] private Sprite m_spriteDisasterWater = null;
     [SerializeField] private Sprite m_spriteStoneBlack = null;
     [SerializeField] private Sprite m_spriteStoneWhite = null;
 
@@ -32,6 +35,8 @@ public class Board : MonoBehaviour
 
     public Card CardPrefab => m_cardPrefab;
     public int HandSize => m_handSize;
+    public Player PlayerBlack => m_playerBlack;
+    public Player PlayerWhite => m_playerWhite;
     public int PlayPerTurn => m_playPerTurn;
 
     public string InfoText {
@@ -137,11 +142,21 @@ public class Board : MonoBehaviour
         });
     }
 
+    public Sprite GetDisasterSprite(DisasterType a_disaster) {
+        return a_disaster == DisasterType.Fire
+            ? m_spriteDisasterFire
+            : a_disaster == DisasterType.Plague
+                ? m_spriteDisasterPlague
+                : m_spriteDisasterWater;
+    }
+
     public Sprite GetStoneSprite(PlayerColor a_color) {
         return a_color == PlayerColor.Black ? m_spriteStoneBlack : m_spriteStoneWhite;
     }
 
     public BoardTile GetTile(int a_tileX, int a_tileY) {
+        if (a_tileX < 0 || a_tileY < 0 || a_tileX >= m_size || a_tileY >= m_size)
+            return null;
         return m_tileMap[a_tileX, a_tileY];
     }
 
