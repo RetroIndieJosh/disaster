@@ -22,18 +22,18 @@ public class Player : MonoBehaviour
 
     public void PlayedCard() {
         ++m_cardsPlayed;
-        if (m_cardsPlayed >= TurnManager.instance.PlayPerTurn)
-            TurnManager.instance.NextTurn();
+        if (m_cardsPlayed >= Board.instance.PlayPerTurn)
+            Board.instance.NextTurn();
     }
 
     public void StartTurn() {
         DrawCards();
         if (m_isHuman == false)
-            TurnManager.instance.NextTurn();
+            Board.instance.NextTurn();
     }
 
     private void DrawCards() {
-        var count = (m_cardsPlayed == 0) ? TurnManager.instance.HandSize : m_cardsPlayed;
+        var count = (m_cardsPlayed == 0) ? Board.instance.HandSize : m_cardsPlayed;
         Debug.Log($"Draw {count} cards");
         for (var i = 0; i < count; ++i) {
             var cardType = m_deck.Draw();
@@ -74,12 +74,12 @@ public class Player : MonoBehaviour
         if (m_isHuman == false)
             return;
 
-        m_handVisual = new Card[TurnManager.instance.HandSize];
+        m_handVisual = new Card[Board.instance.HandSize];
         var pos = Vector2Int.zero;
-        var cardPrefab = TurnManager.instance.CardPrefab;
+        var cardPrefab = Board.instance.CardPrefab;
         var cardWidth = Mathf.FloorToInt(cardPrefab.GetComponent<RectTransform>().rect.width);
-        for (var i = 0; i < TurnManager.instance.HandSize; ++i) {
-            var card = Instantiate(TurnManager.instance.CardPrefab, transform);
+        for (var i = 0; i < Board.instance.HandSize; ++i) {
+            var card = Instantiate(Board.instance.CardPrefab, transform);
             card.Owner = this;
             var rectTransform = card.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = pos;

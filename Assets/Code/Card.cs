@@ -55,8 +55,9 @@ public class Card : MonoBehaviour
     }
 
     public virtual void Play(BoardTile a_tile) {
-        if (m_type == CardType.Life)
+        if (m_type == CardType.Life) {
             a_tile.SetStone(Owner);
+        }
         IsCardActive = false;
         CardType = CardType.None;
         Owner.PlayedCard();
@@ -68,7 +69,7 @@ public class Card : MonoBehaviour
 
     private void Start() {
         m_button.onClick.AddListener(() => {
-            TurnManager.instance.ActiveCard = this;
+            Board.instance.ActiveCard = this;
         });
     }
 

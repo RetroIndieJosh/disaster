@@ -44,14 +44,14 @@ public class BoardTile : MonoBehaviour
         Debug.Log($"Player {a_player} sets stone");
         m_controller = a_player;
         var color = a_player.Color;
-        var sprite = TurnManager.instance.GetStoneSprite(color);
+        var sprite = Board.instance.GetStoneSprite(color);
         SetOverlay(sprite);
     }
 
     private void Start() {
         var button = GetComponent<Button>();
         button.onClick.AddListener(() => {
-            TurnManager.instance.ActivateCard(this);
+            Board.instance.ActivateCard(this);
         });
     }
 
