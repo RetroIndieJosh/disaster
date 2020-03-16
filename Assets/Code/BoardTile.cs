@@ -19,16 +19,28 @@ public class BoardTile : GameElement
         }
     }
 
+    public Disaster Disaster {
+        get => m_disaster;
+        set {
+            m_disaster = value;
+            UpdateOverlay();
+        }
+    }
+
+    public Player Controller {
+        get => m_controller;
+        set {
+            m_controller = value;
+            UpdateOverlay();
+        }
+    }
+
     private Player m_controller = null;
     private Disaster m_disaster = null;
 
     public void Clear() {
-        m_disaster = null;
-        ClearControl();
-    }
-
-    public void ClearControl() {
         m_controller = null;
+        m_disaster = null;
         UpdateOverlay();
     }
 
@@ -71,17 +83,6 @@ public class BoardTile : GameElement
         if (m_direction == Direction.South || m_direction == Direction.Southeast || m_direction == Direction.Southwest)
             dy = 1;
         return Board.instance.GetTile(x + dx, y + dy);
-    }
-
-    public void SetDisaster(Player a_player, Disaster a_disaster) {
-        m_controller = a_player;
-        m_disaster = a_disaster;
-        UpdateOverlay();
-    }
-
-    public void SetStone(Player a_player) {
-        m_controller = a_player;
-        UpdateOverlay();
     }
 
     private void Start() {

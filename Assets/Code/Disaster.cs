@@ -25,7 +25,7 @@ public enum Direction
 public class Disaster
 {
     public int Length => m_tileList.Count;
-    private BoardTile Head => m_tileList[m_tileList.Count - 1];
+    public BoardTile Head => m_tileList[m_tileList.Count - 1];
     private BoardTile Tail => m_tileList[0];
 
     private List<BoardTile> m_tileList = new List<BoardTile>();
@@ -42,14 +42,14 @@ public class Disaster
 
     public void Advance(Player a_owner) {
         // add one past the head in its facing direction
-        Head.ClearControl();
+        Head.Controller = null;
         var next = Head.NextTile();
         if (next == null) {
             a_owner.ClearDisaster();
             return;
         }
-        next.SetDisaster(a_owner, this);
-        next.Direction = Direction.North;
+        next.Disaster = this;
+        next.Controller = a_owner;
         m_tileList.Add(next);
     }
 }

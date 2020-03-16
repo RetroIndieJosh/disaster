@@ -64,7 +64,8 @@ public class Player : MonoBehaviour
         }
         // TODO set direction
         m_disaster = new Disaster(a_disasterType, a_tile);
-        a_tile.SetDisaster(this, m_disaster);
+        a_tile.Controller = this;
+        a_tile.Disaster = m_disaster;
     }
 
     public void PlayedCard() {
@@ -114,8 +115,6 @@ public class Player : MonoBehaviour
     }
 
     public void EndTurn() {
-        if (m_disaster != null)
-            m_disaster.Advance(this);
         CardsEnabled = false;
         Board.instance.NextTurn();
     }

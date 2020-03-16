@@ -157,7 +157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 432, y: 0}
+  m_AnchoredPosition: {x: 378, y: -180}
   m_SizeDelta: {x: 220, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &104614417
@@ -308,7 +308,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 432, y: 0}
+  m_AnchoredPosition: {x: 377.99997, y: -180}
   m_SizeDelta: {x: 220, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &116253657
@@ -937,8 +937,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 200}
+  m_AnchoredPosition: {x: -20, y: 0}
+  m_SizeDelta: {x: 600, y: 200}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &599586555
 MonoBehaviour:
@@ -993,7 +993,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_textAlignment: 257
+  m_textAlignment: 516
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -1032,7 +1032,7 @@ MonoBehaviour:
     spaceCount: 3
     wordCount: 4
     linkCount: 0
-    lineCount: 2
+    lineCount: 1
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
@@ -1416,11 +1416,11 @@ MonoBehaviour:
   m_color: 2
   m_deckTextMesh: {fileID: 118704224}
   m_scoreTextMesh: {fileID: 1833204599}
-  m_cardMoveCount: 4
-  m_cardLifeCount: 4
-  m_cardStepCount: 0
+  m_cardMoveCount: 0
+  m_cardLifeCount: 0
+  m_cardStepCount: 8
   m_cardWildCount: 0
-  m_cardDisasterCount: 2
+  m_cardDisasterCount: 8
 --- !u!224 &1421387994
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1629,11 +1629,11 @@ MonoBehaviour:
   m_color: 1
   m_deckTextMesh: {fileID: 497708580}
   m_scoreTextMesh: {fileID: 2147049678}
-  m_cardMoveCount: 4
-  m_cardLifeCount: 4
-  m_cardStepCount: 0
+  m_cardMoveCount: 0
+  m_cardLifeCount: 0
+  m_cardStepCount: 8
   m_cardWildCount: 0
-  m_cardDisasterCount: 2
+  m_cardDisasterCount: 8
 --- !u!224 &1990231394
 RectTransform:
   m_ObjectHideFlags: 0

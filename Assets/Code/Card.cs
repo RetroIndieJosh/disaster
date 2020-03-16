@@ -43,6 +43,23 @@ public class Card : GameElement
             Board.instance.ToggleTiles((t) => {
                 return t.StoneColor == Owner.Color;
             });
+        } else if (m_type == CardType.Step || m_type == CardType.Spread) {
+            if (Owner.ActiveDisaster == null) {
+                Board.instance.ActiveCard = null;
+                return;
+            }
+            // TODO should check if this succeeds, if not we're not going to set direction
+            Owner.ActiveDisaster.Advance(Owner);
+            m_originTile = Owner.ActiveDisaster.Head;
+            Board.instance.ToggleTiles((t) => {
+                if (t.Disaster != null && t.Disaster.DisasterType == DisasterType.Water)
+                    return false;
+                return t.IsAdjacentOrthogonalTo(m_originTile);
+            });
+            if (m_type == CardType.Spread)
+                m_type = CardType.Step;
+            else
+                m_type = (Owner.Color == PlayerColor.Black) ? CardType.DirectionBlack : CardType.DirectionWhite;
         } else if (m_type == CardType.Water) {
             if( Owner.ActiveDisaster != null && Owner.ActiveDisaster.DisasterType == DisasterType.Water)
                 m_type = CardType.Spread;
@@ -88,7 +105,7 @@ public class Card : GameElement
         if (m_type == CardType.Life) {
             if (m_originTile != null)
                 m_originTile.Clear();
-            a_tile.SetStone(Owner);
+            a_tile.Controller = Owner;
         } else if (m_type == CardType.DirectionBlack) {
             SetDisasterDirection(Board.instance.PlayerBlack, a_tile);
         } else if (m_type == CardType.DirectionWhite) {
@@ -141,32 +158,36 @@ public class Card : GameElement
         });
     }
 
+    private void Update() {
+        if (m_type == CardType.Step || m_type == CardType.Spread)
+            m_button.interactable = Owner.ActiveDisaster != null;
+    }
+
     private void UpdateColor() {
         gameObject.SetActive(true);
         var colors = m_button.colors;
         switch (m_type) {
         case CardType.Fire:
             colors.normalColor = Color.red;
-            colors.highlightedColor = Color.blue;
             break;
         case CardType.Life:
             colors.normalColor = Color.green;
             break;
         case CardType.Move:
-            colors.normalColor = Color.black;
+            colors.normalColor = Color.white;
             break;
         case CardType.None:
             gameObject.SetActive(false);
-            colors.normalColor = Color.white;
+            colors.normalColor = Color.black;
             break;
         case CardType.Plague:
             colors.normalColor = Color.yellow;
             break;
         case CardType.Spread:
-            colors.normalColor = Color.gray;
+            colors.normalColor = new Color(0.3f, 0.3f, 0.3f);
             break;
         case CardType.Step:
-            colors.normalColor = Color.white;
+            colors.normalColor = new Color(0.6f, 0.6f, 0.6f);
             break;
         case CardType.Water:
             colors.normalColor = Color.blue;
@@ -175,6 +196,11 @@ public class Card : GameElement
             colors.normalColor = new Color(0.8f, 0.0f, 0.5f);
             break;
         }
+        var r = colors.normalColor.r;
+        var g = colors.normalColor.g;
+        var b = colors.normalColor.b;
+        var mult = 0.8f;
+        colors.highlightedColor = new Color(r * mult, g * mult, b * mult);
         m_button.colors = colors;
     }
 
@@ -214,5 +240,7 @@ public class Card : GameElement
             m_infoText += m_type.ToString();
             break;
         }
+        if (m_button.interactable == false)
+            m_infoText += "\n(unplayable)";
     }
 }

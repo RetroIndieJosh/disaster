@@ -13,9 +13,10 @@ public class Board : MonoBehaviour
     [SerializeField] private Player m_playerWhite = null;
     [SerializeField] private TextMeshProUGUI m_infoTextMesh = null;
 
-    [Header("Card Settings")]
+    [Header("Game Design")]
     [SerializeField] private int m_handSize = 5;
     [SerializeField] private int m_playPerTurn = 2;
+    [SerializeField] private bool m_autoAdvance = false;
     
     [Header("Sprites")]
     [SerializeField] private Sprite m_spriteStoneBlack = null;
@@ -79,7 +80,7 @@ public class Board : MonoBehaviour
     public void ActivateCard(BoardTile a_tile) {
         if (ActiveCard == null)
             return;
-        Debug.Log($"Activate card [{ActiveCard}] on tile [{a_tile}]");
+        Debug.Log($"Play [{ActiveCard.CardType}] on ({a_tile.x}, {a_tile.y})");
         ActiveCard.Play(a_tile);
     }
 
@@ -184,6 +185,8 @@ public class Board : MonoBehaviour
     }
 
     public void NextTurn() {
+        if (m_autoAdvance && m_activePlayer.ActiveDisaster != null)
+            m_activePlayer.ActiveDisaster.Advance(m_activePlayer);
         m_activePlayer = (m_activePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;
         Debug.Log($"{m_activePlayer}'s turn");
         m_activePlayer.StartTurn();
@@ -248,9 +251,9 @@ public class Board : MonoBehaviour
 
     private void PlaceInitialStones() {
         foreach (var coord in m_initialStonesBlack)
-            m_tileMap[coord.x, coord.y].SetStone(m_playerBlack);
+            m_tileMap[coord.x, coord.y].Controller = m_playerBlack;
         foreach (var coord in m_initialStonesWhite)
-            m_tileMap[coord.x, coord.y].SetStone(m_playerWhite);
+            m_tileMap[coord.x, coord.y].Controller = m_playerWhite;
     }
 
 }
