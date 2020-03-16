@@ -18,18 +18,26 @@ public class Player : MonoBehaviour
     private Deck m_deck = new Deck();
     private Card[] m_handVisual = null;
 
+    private bool CardsEnabled {
+        set {
+        foreach( var card in m_handVisual)
+            card.GetComponent<Button>().interactable = value;
+        }
+    }
+
     private int m_cardsPlayed = 0;
 
     public void PlayedCard() {
         ++m_cardsPlayed;
         if (m_cardsPlayed >= Board.instance.PlayPerTurn)
-            Board.instance.NextTurn();
+            EndTurn();
     }
 
     public void StartTurn() {
+        CardsEnabled = true;
         DrawCards();
         if (m_isHuman == false)
-            Board.instance.NextTurn();
+            EndTurn();
     }
 
     private void DrawCards() {
@@ -52,19 +60,33 @@ public class Player : MonoBehaviour
         m_cardsPlayed = 0;
     }
 
+    private void EndTurn() {
+        CardsEnabled = false;
+        Board.instance.NextTurn();
+    }
+
+    [Header("Deck")]
+    [SerializeField] private int m_cardMoveCount = 4;
+    [SerializeField] private int m_cardLifeCount = 4;
+    [SerializeField] private int m_cardStepCount = 4;
+    [SerializeField] private int m_cardWildCount = 1;
+    [SerializeField, Tooltip("All disasters plus Spread")] private int m_cardDisasterCount = 4;
+
     private void Awake() {
-        for (var i = 0; i < 4; ++i) {
+        for (var i = 0; i < m_cardMoveCount; ++i)
             m_deck.Add(CardType.Move);
+        for (var i = 0; i < m_cardLifeCount; ++i)
             m_deck.Add(CardType.Life);
+        for (var i = 0; i < m_cardStepCount; ++i)
             m_deck.Add(CardType.Step);
-        }
-        for (var i = 0; i < 2; ++i) {
+        for (var i = 0; i < m_cardDisasterCount; ++i) {
             m_deck.Add(CardType.Fire);
             m_deck.Add(CardType.Water);
             m_deck.Add(CardType.Plague);
             m_deck.Add(CardType.Spread);
         }
-        m_deck.Add(CardType.Wild);
+        for (var i = 0; i < m_cardWildCount; ++i)
+            m_deck.Add(CardType.Wild);
 
         m_deck.Shuffle();
         InitializeVisualHand();
@@ -85,6 +107,8 @@ public class Player : MonoBehaviour
             rectTransform.anchoredPosition = pos;
             pos.x += cardWidth;
             m_handVisual[i] = card;
+
+            card.GetComponent<Button>().interactable = false;
         }
     }
 }

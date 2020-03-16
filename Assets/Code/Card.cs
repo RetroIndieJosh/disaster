@@ -21,7 +21,7 @@ public enum CardType
 }
 
 [RequireComponent(typeof(Button))]
-public class Card : MonoBehaviour
+public class Card : GameElement
 {
     public Player Owner {
         private get; set;
@@ -58,6 +58,7 @@ public class Card : MonoBehaviour
         set {
             m_type = value;
             UpdateColor();
+            UpdateInfo();
         }
     }
 
@@ -65,7 +66,7 @@ public class Card : MonoBehaviour
         if (m_type == CardType.Life) {
             a_tile.SetStone(Owner);
         }
-        IsCardActive = false;
+        Board.instance.ActiveCard = null;
         CardType = CardType.None;
         Owner.PlayedCard();
     }
@@ -75,6 +76,8 @@ public class Card : MonoBehaviour
     }
 
     private void Start() {
+        UpdateInfo();
+
         m_button.onClick.AddListener(() => {
             Board.instance.ActiveCard = this;
         });
@@ -86,6 +89,7 @@ public class Card : MonoBehaviour
         switch (m_type) {
         case CardType.Fire:
             colors.normalColor = Color.red;
+            colors.highlightedColor = Color.blue;
             break;
         case CardType.Life:
             colors.normalColor = Color.green;
@@ -114,5 +118,42 @@ public class Card : MonoBehaviour
             break;
         }
         m_button.colors = colors;
+    }
+
+    private void UpdateInfo() {
+        switch (m_type) {
+        /*
+        case CardType.Fire:
+            m_infoText = "Fire";
+            break;
+        case CardType.Life:
+            m_infoText = "Fire";
+            break;
+        case CardType.Move:
+            m_infoText = "Fire";
+            break;
+        case CardType.None:
+            m_infoText = "Fire";
+            break;
+        case CardType.Plague:
+            m_infoText = "Fire";
+            break;
+        case CardType.Spread:
+            m_infoText = "Fire";
+            break;
+        case CardType.Step:
+            m_infoText = "Fire";
+            break;
+        case CardType.Water:
+            m_infoText = "Fire";
+            break;
+        case CardType.Wild:
+            m_infoText = "Fire";
+            break;
+            */
+        default:
+            m_infoText = m_type.ToString();
+            break;
+        }
     }
 }

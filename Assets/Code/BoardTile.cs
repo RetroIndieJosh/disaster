@@ -26,14 +26,20 @@ public enum Direction
     Southwest = 0x04 + 0x08
 }
 
-public class BoardTile : MonoBehaviour
+public class BoardTile : GameElement
 {
     [SerializeField] private Image m_overlayImage = null;
 
     [HideInInspector] public int x = -1;
     [HideInInspector] public int y = -1;
 
-    public BoardTileState State => m_state;
+    public BoardTileState State {
+        get => m_state;
+        set {
+            m_state = value;
+            UpdateInfo();
+        }
+    }
 
     private Player m_controller = null;
     private Disaster m_disaster = null;
@@ -52,12 +58,14 @@ public class BoardTile : MonoBehaviour
     public void SetStone(Player a_player) {
         Debug.Log($"Player {a_player} sets stone");
         m_controller = a_player;
-        m_state = (a_player.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.Clear;
+        State = (a_player.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.White;
         var sprite = Board.instance.GetStoneSprite(a_player.Color);
         SetOverlay(sprite);
     }
 
     private void Start() {
+        UpdateInfo();
+
         var button = GetComponent<Button>();
         button.onClick.AddListener(() => {
             Board.instance.ActivateCard(this);
@@ -67,5 +75,27 @@ public class BoardTile : MonoBehaviour
     private void SetOverlay(Sprite a_sprite) {
         m_overlayImage.sprite = a_sprite;
         m_overlayImage.enabled = a_sprite != null;
+    }
+
+    private void UpdateInfo() {
+        switch (m_state) {
+        /*
+        case BoardTileState.Black:
+            break;
+        case BoardTileState.Clear:
+            break;
+        case BoardTileState.Fire:
+            break;
+        case BoardTileState.Flood:
+            break;
+        case BoardTileState.Plague:
+            break;
+        case BoardTileState.White:
+            break;
+            */
+        default:
+            m_infoText = m_state.ToString();
+            break;
+        }
     }
 }

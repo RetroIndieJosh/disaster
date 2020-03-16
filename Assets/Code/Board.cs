@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using TMPro;
 
 public class Board : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class Board : MonoBehaviour
 
     [SerializeField] private Player m_playerBlack = null;
     [SerializeField] private Player m_playerWhite = null;
+    [SerializeField] private TextMeshProUGUI m_infoTextMesh = null;
 
     [Header("Card Settings")]
     [SerializeField] private int m_handSize = 5;
@@ -32,6 +34,10 @@ public class Board : MonoBehaviour
     public int HandSize => m_handSize;
     public int PlayPerTurn => m_playPerTurn;
 
+    public string InfoText {
+        set => m_infoTextMesh.text = value;
+    }
+
     private Player m_activePlayer = null;
     private Card m_activeCard = null;
 
@@ -49,11 +55,15 @@ public class Board : MonoBehaviour
                 }
             }
             m_activeCard = value;
+            if (m_activeCard == null)
+                return;
             m_activeCard.IsCardActive = true;
         }
     }
 
     public void ActivateCard(BoardTile a_tile) {
+        if (ActiveCard == null)
+            return;
         Debug.Log($"Activate card [{ActiveCard}] on tile [{a_tile}]");
         ActiveCard.Play(a_tile);
     }
