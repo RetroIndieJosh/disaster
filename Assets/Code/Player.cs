@@ -51,7 +51,11 @@ public class Player : MonoBehaviour
         }
     }
 
-    private int m_cardsPlayed = 0;
+    private int m_cardsPlayed = -1;
+
+    public void ClearDisaster() {
+        m_disaster = null;
+    }
 
     public void CreateDisaster(DisasterType a_disasterType, BoardTile a_tile) {
         if (m_disaster != null) {
@@ -84,7 +88,7 @@ public class Player : MonoBehaviour
             Board.instance.EndGame();
             return;
         }
-        var count = (m_cardsPlayed == 0) ? Board.instance.HandSize : m_cardsPlayed;
+        var count = (m_cardsPlayed == -1) ? Board.instance.HandSize : m_cardsPlayed;
         if( m_deck.CardCount < count)
             count = m_deck.CardCount;
         Debug.Log($"Draw {count} cards");
@@ -109,7 +113,7 @@ public class Player : MonoBehaviour
             : $"Deck: {m_deck.CardCount}";
     }
 
-    private void EndTurn() {
+    public void EndTurn() {
         if (m_disaster != null)
             m_disaster.Advance(this);
         CardsEnabled = false;

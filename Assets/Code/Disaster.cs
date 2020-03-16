@@ -44,7 +44,12 @@ public class Disaster
         // add one past the head in its facing direction
         Head.ClearControl();
         var next = Head.NextTile();
+        if (next == null) {
+            a_owner.ClearDisaster();
+            return;
+        }
         next.SetDisaster(a_owner, this);
+        next.Direction = Direction.North;
         m_tileList.Add(next);
     }
 }

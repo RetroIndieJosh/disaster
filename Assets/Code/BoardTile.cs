@@ -25,11 +25,11 @@ public class BoardTile : GameElement
     public void Clear() {
         m_disaster = null;
         ClearControl();
-        SetOverlay(null);
     }
 
     public void ClearControl() {
         m_controller = null;
+        UpdateOverlay();
     }
 
     public bool IsAdjacentDiagonalTo(BoardTile a_tile, int a_distance = 1) {
@@ -63,9 +63,9 @@ public class BoardTile : GameElement
         var dx = 0;
         var dy = 0;
         if (m_direction == Direction.East || m_direction == Direction.Northeast || m_direction == Direction.Southeast)
-            dx = -1;
-        if (m_direction == Direction.West || m_direction == Direction.Northwest || m_direction == Direction.Southwest)
             dx = 1;
+        if (m_direction == Direction.West || m_direction == Direction.Northwest || m_direction == Direction.Southwest)
+            dx = -1;
         if (m_direction == Direction.North || m_direction == Direction.Northeast || m_direction == Direction.Northwest)
             dy = -1;
         if (m_direction == Direction.South || m_direction == Direction.Southeast || m_direction == Direction.Southwest)
