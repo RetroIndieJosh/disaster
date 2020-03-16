@@ -11,6 +11,7 @@ public class TurnManager : MonoBehaviour
 
     [Header("Game Settings")]
     [SerializeField] private int m_handSize = 5;
+    [SerializeField] private int m_playPerTurn = 2;
     
     [Header("Sprites")]
     [SerializeField] private Sprite m_spriteStoneBlack = null;
@@ -19,19 +20,34 @@ public class TurnManager : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private Card m_cardPrefab = null;
 
-    private Player m_activePlayer = null;
-    private Board m_board = null;
-
     public Card ActiveCard {
-        private get; set;
+        private get => m_activeCard;
+        set {
+            if( m_activeCard != null) {
+                m_activeCard.IsActive = false;
+                if (m_activeCard == value) {
+                    m_activeCard = null;
+                    return;
+                }
+            }
+            m_activeCard = value;
+            m_activeCard.IsActive = true;
+        }
     }
 
     public Card CardPrefab => m_cardPrefab;
     public int HandSize => m_handSize;
+    public int PlayPerTurn => m_playPerTurn;
+
+    private Player ActivePlayer => m_playerList[m_turnIndex];
+    private Card m_activeCard = null;
+    private Board m_board = null;
+    private int m_turnIndex = 0;
+
 
     public void ActivateCard(BoardTile a_tile) {
         Debug.Log($"Activate card [{ActiveCard}] on tile [{a_tile}]");
-        ActiveCard.Activate(a_tile, m_activePlayer);
+        ActiveCard.Play(a_tile);
     }
 
     public void AddPlayer(Player a_player) {
@@ -47,6 +63,12 @@ public class TurnManager : MonoBehaviour
         return a_color == PlayerColor.Black ? m_spriteStoneBlack : m_spriteStoneWhite;
     }
 
+    public void NextTurn() {
+        ++m_turnIndex;
+        if (m_turnIndex >= m_playerList.Count)
+            m_turnIndex = 0;
+    }
+
     private void Awake() {
         if (instance != null) {
             Destroy(gameObject);
@@ -56,6 +78,6 @@ public class TurnManager : MonoBehaviour
     }
 
     private void Start() {
-        m_activePlayer = m_playerList[0];
+        ActivePlayer.StartTurn();
     }
 }

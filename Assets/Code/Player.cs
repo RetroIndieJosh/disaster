@@ -11,29 +11,43 @@ public enum PlayerColor
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private bool m_isHuman = true;
     [SerializeField] private PlayerColor m_color = PlayerColor.Black;
 
     public PlayerColor Color => m_color;
     private Deck m_deck = new Deck();
-    private Deck m_hand = new Deck();
     private Card[] m_handVisual = null;
 
+    private int m_cardsPlayed = 0;
+
+    public void PlayedCard() {
+        ++m_cardsPlayed;
+        if (m_cardsPlayed >= TurnManager.instance.PlayPerTurn)
+            TurnManager.instance.NextTurn();
+    }
+
+    public void StartTurn() {
+        DrawCards();
+    }
+
     private void DrawCards() {
-        var count = TurnManager.instance.HandSize - m_hand.CardCount;
+        var count = TurnManager.instance.HandSize - m_cardsPlayed;
         for (var i = 0; i < count; ++i) {
             var cardType = m_deck.Draw();
-            m_hand.Add(cardType);
 
-            for (var k = 0; k < m_handVisual.Length; ++k) {
-                if (m_handVisual[k].CardType == CardType.None) {
-                    m_handVisual[k].CardType = cardType;
-                    break;
+            if (m_isHuman) {
+                for (var k = 0; k < m_handVisual.Length; ++k) {
+                    if (m_handVisual[k].CardType == CardType.None) {
+                        m_handVisual[k].CardType = cardType;
+                        break;
+                    }
                 }
             }
         }
+        m_cardsPlayed = 0;
     }
 
-    private void Start() {
+    private void Awake() {
         for (var i = 0; i < 4; ++i) {
             m_deck.Add(CardType.Move);
             m_deck.Add(CardType.Life);
@@ -49,18 +63,19 @@ public class Player : MonoBehaviour
 
         m_deck.Shuffle();
         InitializeVisualHand();
-
-        DrawCards();
-        Debug.Log($"Hand: {m_hand.ToString()}");
     }
 
     private void InitializeVisualHand() {
+        if (m_isHuman == false)
+            return;
+
         m_handVisual = new Card[TurnManager.instance.HandSize];
         var pos = Vector2Int.zero;
         var cardPrefab = TurnManager.instance.CardPrefab;
         var cardWidth = Mathf.FloorToInt(cardPrefab.GetComponent<RectTransform>().rect.width);
         for (var i = 0; i < TurnManager.instance.HandSize; ++i) {
             var card = Instantiate(TurnManager.instance.CardPrefab, transform);
+            card.Owner = this;
             var rectTransform = card.GetComponent<RectTransform>();
             rectTransform.anchoredPosition = pos;
             pos.x += cardWidth;

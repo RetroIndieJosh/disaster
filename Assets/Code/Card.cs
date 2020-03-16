@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public enum CardType
 {
@@ -22,8 +23,29 @@ public enum CardType
 [RequireComponent(typeof(Button))]
 public class Card : MonoBehaviour
 {
+    public Player Owner {
+        private get; set;
+    }
+
+    public UnityEvent m_onPlayed = new UnityEvent();
+
     Button m_button = null;
     private CardType m_type = CardType.None;
+    private bool m_isActive = false;
+
+    public bool IsActive {
+        get => m_isActive;
+        set {
+            var rectTrans = GetComponent<RectTransform>();
+            var height = rectTrans.rect.height / 2;
+            var pos = rectTrans.anchoredPosition;
+            m_isActive = value;
+            Debug.Log($"Set card {name} " + (m_isActive ? "active" : "inactive"));
+            pos.y = m_isActive ? Mathf.FloorToInt(height) / 2 : 0;
+            rectTrans.anchoredPosition = pos;
+        }
+    }
+
     public CardType CardType {
         get => m_type;
         set {
@@ -32,8 +54,9 @@ public class Card : MonoBehaviour
         }
     }
 
-    public virtual void Activate(BoardTile a_tile, Player a_player) {
-        a_tile.SetStone(a_player);
+    public virtual void Play(BoardTile a_tile) {
+        a_tile.SetStone(Owner);
+        m_type = CardType.None;
     }
 
     private void Awake() {
@@ -43,10 +66,6 @@ public class Card : MonoBehaviour
     private void Start() {
         m_button.onClick.AddListener(() => {
             TurnManager.instance.ActiveCard = this;
-            Debug.Log($"Card [{name}] active");
-            // TODO how to tell if active?
-                // TODO shift / highlight to set active
-                // TODO shift back / unhighlight to set inactive
         });
     }
 

@@ -765,6 +765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f70846dca01c3749a54ea426f642f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_isHuman: 0
   m_color: 1
 --- !u!224 &1421387994
 RectTransform:
@@ -814,6 +815,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f70846dca01c3749a54ea426f642f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_isHuman: 1
   m_color: 0
 --- !u!224 &1990231394
 RectTransform:
