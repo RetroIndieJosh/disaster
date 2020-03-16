@@ -809,14 +809,24 @@ MonoBehaviour:
   m_infoTextMesh: {fileID: 599586555}
   m_handSize: 5
   m_playPerTurn: 2
+  m_spriteStoneBlack: {fileID: 21300000, guid: 7671114442aadbf468f25dc5f3ff1be6, type: 3}
+  m_spriteStoneWhite: {fileID: 21300000, guid: 663c8bfc4fc19f549994e0d7f40f404e, type: 3}
   m_spriteDisasterFire: {fileID: 21300000, guid: 5bdcdd704ba2a3e4888ed2b09f514582,
     type: 3}
   m_spriteDisasterPlague: {fileID: 21300000, guid: ee6541942db22cd47914740712b56b7c,
     type: 3}
   m_spriteDisasterWater: {fileID: 21300000, guid: c286d2899a423274c8ecdddbd566c687,
     type: 3}
-  m_spriteStoneBlack: {fileID: 21300000, guid: 7671114442aadbf468f25dc5f3ff1be6, type: 3}
-  m_spriteStoneWhite: {fileID: 21300000, guid: 663c8bfc4fc19f549994e0d7f40f404e, type: 3}
+  m_spriteDisasterFireBlack: {fileID: 21300000, guid: 5bdcdd704ba2a3e4888ed2b09f514582,
+    type: 3}
+  m_spriteDisasterPlagueBlack: {fileID: 0}
+  m_spriteDisasterWaterBlack: {fileID: 21300000, guid: a725a8079b443de47aad1ee63b9b2759,
+    type: 3}
+  m_spriteDisasterFireWhite: {fileID: 21300000, guid: 8cb33b2bf8400fd4ca143e9cdd2b3c3d,
+    type: 3}
+  m_spriteDisasterPlagueWhite: {fileID: 0}
+  m_spriteDisasterWaterWhite: {fileID: 21300000, guid: c123278e4c53a1543a6927f70758edb3,
+    type: 3}
   m_cardPrefab: {fileID: 828228990, guid: 9030d3511d1bf20458ea4d6c918b3854, type: 3}
   m_tilePrefab: {fileID: 8633574164378416054, guid: 88621c6f132382f469bb411ba676885d,
     type: 3}
@@ -944,7 +954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_isHuman: 1
-  m_color: 1
+  m_color: 2
   m_deckTextMesh: {fileID: 118704224}
   m_scoreTextMesh: {fileID: 1833204599}
   m_cardMoveCount: 3
@@ -1157,7 +1167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_isHuman: 1
-  m_color: 0
+  m_color: 1
   m_deckTextMesh: {fileID: 497708580}
   m_scoreTextMesh: {fileID: 2147049678}
   m_cardMoveCount: 3

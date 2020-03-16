@@ -3,16 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum BoardTileState
-{
-    Clear = 0,
-    Black = 1,
-    White = 2,
-    Fire = 3,
-    Water = 4,
-    Plague = 5
-}
-
 public class BoardTile : GameElement
 {
     [SerializeField] private Image m_overlayImage = null;
@@ -20,27 +10,32 @@ public class BoardTile : GameElement
     [HideInInspector] public int x = -1;
     [HideInInspector] public int y = -1;
 
-    public BoardTileState State {
-        get => m_state;
-        set {
-            m_state = value;
-            UpdateInfo();
+    public bool IsClear => m_controller == null && m_disaster == null;
+    public PlayerColor StoneColor {
+        get {
+            if (m_controller == null || m_disaster != null)
+                return PlayerColor.None;
+            return m_controller.Color;
         }
     }
 
     private Player m_controller = null;
-    private BoardTileState m_state = BoardTileState.Clear;
+    private Disaster m_disaster = null;
 
     public void Clear() {
-        m_controller = null;
-        m_state = BoardTileState.Clear;
+        m_disaster = null;
+        ClearControl();
         SetOverlay(null);
+    }
+
+    public void ClearControl() {
+        m_controller = null;
     }
 
     public bool IsAdjacentDiagonalTo(BoardTile a_tile, int a_distance = 1) {
         var dx = a_tile.x - x;
         var dy = a_tile.y - y;
-        return a_tile != this && Mathf.Abs(dx) == Mathf.Abs(dy) && Mathf.Abs(dx) <= a_distance 
+        return a_tile != this && Mathf.Abs(dx) == Mathf.Abs(dy) && Mathf.Abs(dx) <= a_distance
             && Mathf.Abs(dy) <= a_distance;
     }
 
@@ -53,31 +48,14 @@ public class BoardTile : GameElement
     }
 
     public bool HasAdjacentOrthogonalStone(Player a_player) {
-        var state = (a_player.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.White;
-        return Board.instance.CheckNeighborsOrthogonal(x, y, state) && m_state != state;
+        return Board.instance.CheckNeighborsOrthogonal(x, y, a_player.Color) && IsClear;
     }
 
     private Direction m_direction = Direction.None;
     public Direction Direction {
         set {
             m_direction = value;
-            m_overlayImage.transform.rotation = Quaternion.identity;
-            if( m_direction == Direction.North)
-                m_overlayImage.transform.Rotate(Vector3.forward, 0f);
-            else if (m_direction == Direction.Northwest)
-                m_overlayImage.transform.Rotate(Vector3.forward, 45f);
-            else if( m_direction == Direction.West)
-                m_overlayImage.transform.Rotate(Vector3.forward, 90f);
-            else if (m_direction == Direction.Southwest)
-                m_overlayImage.transform.Rotate(Vector3.forward, 135f);
-            else if( m_direction == Direction.South)
-                m_overlayImage.transform.Rotate(Vector3.forward, 180f);
-            else if( m_direction == Direction.Southeast)
-                m_overlayImage.transform.Rotate(Vector3.forward, 225f);
-            else if( m_direction == Direction.East)
-                m_overlayImage.transform.Rotate(Vector3.forward, 270f);
-            else if( m_direction == Direction.Northeast)
-                m_overlayImage.transform.Rotate(Vector3.forward, 315f);
+            UpdateOverlay();
         }
     }
 
@@ -95,23 +73,15 @@ public class BoardTile : GameElement
         return Board.instance.GetTile(x + dx, y + dy);
     }
 
-    public void SetDisaster(Player a_player, DisasterType a_disaster) {
+    public void SetDisaster(Player a_player, Disaster a_disaster) {
         m_controller = a_player;
-        if (a_disaster == DisasterType.Fire)
-            State = BoardTileState.Fire;
-        else if (a_disaster == DisasterType.Plague)
-            State = BoardTileState.Plague;
-        else if (a_disaster == DisasterType.Water)
-            State = BoardTileState.Water;
-        var sprite = Board.instance.GetDisasterSprite(a_disaster);
-        SetOverlay(sprite);
+        m_disaster = a_disaster;
+        UpdateOverlay();
     }
 
     public void SetStone(Player a_player) {
         m_controller = a_player;
-        State = (a_player.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.White;
-        var sprite = Board.instance.GetStoneSprite(a_player.Color);
-        SetOverlay(sprite);
+        UpdateOverlay();
     }
 
     private void Start() {
@@ -129,8 +99,44 @@ public class BoardTile : GameElement
     }
 
     private void UpdateInfo() {
-        m_infoText = $"Board {x},{y}: {m_state}";
-        if( m_controller != null)
-            m_infoText += $"(Controlled by {m_controller.name})";
+        m_infoText = $"Board {x},{y}: ";
+        if (IsClear)
+            m_infoText += "Clear";
+        else {
+            if (m_controller != null)
+                m_infoText += $"{m_controller.Color} ";
+            if (m_disaster != null)
+                m_infoText += $"{m_disaster.DisasterType}";
+        }
+    }
+
+    private void UpdateOverlay() {
+        Sprite sprite = null;
+        if (StoneColor != PlayerColor.None) {
+            sprite = Board.instance.GetStoneSprite(StoneColor);
+        } else if (m_disaster != null) {
+            sprite = m_controller == null
+                ? Board.instance.GetDisasterSprite(m_disaster.DisasterType)
+                : Board.instance.GetDisasterSprite(m_disaster.DisasterType, m_controller.Color);
+
+            m_overlayImage.transform.rotation = Quaternion.identity;
+            if (m_direction == Direction.North)
+                m_overlayImage.transform.Rotate(Vector3.forward, 0f);
+            else if (m_direction == Direction.Northwest)
+                m_overlayImage.transform.Rotate(Vector3.forward, 45f);
+            else if (m_direction == Direction.West)
+                m_overlayImage.transform.Rotate(Vector3.forward, 90f);
+            else if (m_direction == Direction.Southwest)
+                m_overlayImage.transform.Rotate(Vector3.forward, 135f);
+            else if (m_direction == Direction.South)
+                m_overlayImage.transform.Rotate(Vector3.forward, 180f);
+            else if (m_direction == Direction.Southeast)
+                m_overlayImage.transform.Rotate(Vector3.forward, 225f);
+            else if (m_direction == Direction.East)
+                m_overlayImage.transform.Rotate(Vector3.forward, 270f);
+            else if (m_direction == Direction.Northeast)
+                m_overlayImage.transform.Rotate(Vector3.forward, 315f);
+        }
+        SetOverlay(sprite);
     }
 }

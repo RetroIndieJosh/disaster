@@ -37,12 +37,11 @@ public class Card : GameElement
     private void Activate() {
         if (m_type == CardType.Life) {
             Board.instance.ToggleTiles((t) => {
-                return t.HasAdjacentOrthogonalStone(Owner) && t.State == BoardTileState.Clear;
+                return t.HasAdjacentOrthogonalStone(Owner) && t.IsClear;
             });
         } else if (m_type == CardType.Move) {
-            var state = (Owner.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.White;
             Board.instance.ToggleTiles((t) => {
-                return t.State == state;
+                return t.StoneColor == Owner.Color;
             });
         } else if (m_type == CardType.Water) {
             if( Owner.ActiveDisaster != null && Owner.ActiveDisaster.DisasterType == DisasterType.Water)
@@ -50,7 +49,7 @@ public class Card : GameElement
             // TODO ask "step or new" if both available
             // spawn
             Board.instance.ToggleTiles((t) => {
-                return t.HasAdjacentOrthogonalStone(Owner) && t.State == BoardTileState.Clear;
+                return t.HasAdjacentOrthogonalStone(Owner) && t.IsClear;
             });
         }
     }
@@ -97,8 +96,7 @@ public class Card : GameElement
         } else { // multistep
             if (m_type == CardType.Move) {
                 Board.instance.ToggleTiles((t) => {
-                    return t.State == BoardTileState.Clear
-                        && (t.IsAdjacentOrthogonalTo(a_tile, 2) || t.IsAdjacentDiagonalTo(a_tile));
+                    return t.IsClear && (t.IsAdjacentOrthogonalTo(a_tile, 2) || t.IsAdjacentDiagonalTo(a_tile));
                 });
                 m_type = CardType.Life;
             } else if (m_type == CardType.Water) {
@@ -120,9 +118,9 @@ public class Card : GameElement
     private void SetDisasterDirection(Player a_player, BoardTile a_endTile) {
         var dir = Direction.None;
         if (m_originTile.x > a_endTile.x)
-            dir = Direction.East;
-        else if (m_originTile.x < a_endTile.x)
             dir = Direction.West;
+        else if (m_originTile.x < a_endTile.x)
+            dir = Direction.East;
         else if (m_originTile.y > a_endTile.y)
             dir = Direction.North;
         else if (m_originTile.y < a_endTile.y)

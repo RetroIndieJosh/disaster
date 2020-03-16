@@ -18,11 +18,17 @@ public class Board : MonoBehaviour
     [SerializeField] private int m_playPerTurn = 2;
     
     [Header("Sprites")]
+    [SerializeField] private Sprite m_spriteStoneBlack = null;
+    [SerializeField] private Sprite m_spriteStoneWhite = null;
     [SerializeField] private Sprite m_spriteDisasterFire = null;
     [SerializeField] private Sprite m_spriteDisasterPlague = null;
     [SerializeField] private Sprite m_spriteDisasterWater = null;
-    [SerializeField] private Sprite m_spriteStoneBlack = null;
-    [SerializeField] private Sprite m_spriteStoneWhite = null;
+    [SerializeField] private Sprite m_spriteDisasterFireBlack = null;
+    [SerializeField] private Sprite m_spriteDisasterPlagueBlack = null;
+    [SerializeField] private Sprite m_spriteDisasterWaterBlack = null;
+    [SerializeField] private Sprite m_spriteDisasterFireWhite = null;
+    [SerializeField] private Sprite m_spriteDisasterPlagueWhite = null;
+    [SerializeField] private Sprite m_spriteDisasterWaterWhite = null;
 
     [Header("Prefabs")]
     [SerializeField] private Card m_cardPrefab = null;
@@ -77,12 +83,12 @@ public class Board : MonoBehaviour
         ActiveCard.Play(a_tile);
     }
 
-    public bool CheckNeighborsBoth(int a_x, int a_y, BoardTileState a_state, int a_distance) {
-        return CheckNeighborsOrthogonal(a_x, a_y, a_state, a_distance)
-            || CheckNeighborsDiagonal(a_x, a_y, a_state, a_distance);
+    public bool CheckNeighborsBoth(int a_x, int a_y, PlayerColor a_color, int a_distance) {
+        return CheckNeighborsOrthogonal(a_x, a_y, a_color, a_distance)
+            || CheckNeighborsDiagonal(a_x, a_y, a_color, a_distance);
     }
 
-    public bool CheckNeighborsDiagonal(int a_x, int a_y, BoardTileState a_state, int a_distance = 1) {
+    public bool CheckNeighborsDiagonal(int a_x, int a_y, PlayerColor a_color, int a_distance = 1) {
         var stepList = new List<int>();
         for (var i = 1; i <= a_distance; ++i) {
             stepList.Add(i);
@@ -90,25 +96,25 @@ public class Board : MonoBehaviour
         }
         foreach (var oy in stepList) {
             foreach (var ox in stepList) {
-                if (TileMatch(a_x + ox, a_y + oy, a_state))
+                if (TileMatch(a_x + ox, a_y + oy, a_color))
                     return true;
             }
         }
         return false;
     }
 
-    public bool CheckNeighborsOrthogonal(int a_x, int a_y, BoardTileState a_state, int a_distance = 1) {
+    public bool CheckNeighborsOrthogonal(int a_x, int a_y, PlayerColor a_color, int a_distance = 1) {
         var stepList = new List<int>();
         for (var i = 1; i <= a_distance; ++i) {
             stepList.Add(i);
             stepList.Add(-i);
         }
         foreach (var ox in stepList) {
-            if (TileMatch(a_x + ox, a_y, a_state))
+            if (TileMatch(a_x + ox, a_y, a_color))
                 return true;
         }
         foreach (var oy in stepList) {
-            if (TileMatch(a_x, a_y + oy, a_state))
+            if (TileMatch(a_x, a_y + oy, a_color))
                 return true;
         }
         return false;
@@ -150,8 +156,25 @@ public class Board : MonoBehaviour
                 : m_spriteDisasterWater;
     }
 
+    public Sprite GetDisasterSprite(DisasterType a_disaster, PlayerColor a_color) {
+        return a_color == PlayerColor.Black
+            ? a_disaster == DisasterType.Fire
+                ? m_spriteDisasterFireBlack
+                : a_disaster == DisasterType.Plague
+                    ? m_spriteDisasterPlagueBlack
+                    : m_spriteDisasterWaterBlack
+            : a_disaster == DisasterType.Fire
+                ? m_spriteDisasterFireWhite
+                : a_disaster == DisasterType.Plague
+                    ? m_spriteDisasterPlagueWhite
+                    : m_spriteDisasterWaterWhite;
+    }
+
     public Sprite GetStoneSprite(PlayerColor a_color) {
-        return a_color == PlayerColor.Black ? m_spriteStoneBlack : m_spriteStoneWhite;
+        return a_color == PlayerColor.None 
+            ? null 
+            : a_color == PlayerColor.Black 
+                ? m_spriteStoneBlack : m_spriteStoneWhite;
     }
 
     public BoardTile GetTile(int a_tileX, int a_tileY) {
@@ -170,9 +193,9 @@ public class Board : MonoBehaviour
         var blackScore = 0;
         var whiteScore = 0;
         foreach (var tile in m_tileMap) {
-            if (tile.State == BoardTileState.Black)
+            if (tile.StoneColor == PlayerColor.Black)
                 ++blackScore;
-            else if (tile.State == BoardTileState.White)
+            else if (tile.StoneColor == PlayerColor.White)
                 ++whiteScore;
         }
 
@@ -202,8 +225,8 @@ public class Board : MonoBehaviour
         m_activePlayer.StartTurn();
     }
 
-    private bool TileMatch(int a_x, int a_y, BoardTileState a_state) {
-        return a_x >= 0 && a_y >= 0 && a_x < m_size && a_y < m_size && m_tileMap[a_x, a_y].State == a_state;
+    private bool TileMatch(int a_x, int a_y, PlayerColor a_color) {
+        return a_x >= 0 && a_y >= 0 && a_x < m_size && a_y < m_size && m_tileMap[a_x, a_y].StoneColor == a_color;
     }
 
     private void CreateTileButtons() {

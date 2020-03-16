@@ -6,8 +6,9 @@ using TMPro;
 
 public enum PlayerColor
 {
-    Black = 0x00,
-    White = 0x01
+    None = 0x00,
+    Black = 0x01,
+    White = 0x02
 }
 
 public class Player : MonoBehaviour
@@ -52,14 +53,14 @@ public class Player : MonoBehaviour
 
     private int m_cardsPlayed = 0;
 
-    public void CreateDisaster(DisasterType a_disaster, BoardTile a_tile) {
+    public void CreateDisaster(DisasterType a_disasterType, BoardTile a_tile) {
         if (m_disaster != null) {
             Debug.LogError("Tried to create disaster illegally");
             return;
         }
         // TODO set direction
-        m_disaster = new Disaster(a_disaster, a_tile);
-        a_tile.SetDisaster(this, a_disaster);
+        m_disaster = new Disaster(a_disasterType, a_tile);
+        a_tile.SetDisaster(this, m_disaster);
     }
 
     public void PlayedCard() {
@@ -109,6 +110,8 @@ public class Player : MonoBehaviour
     }
 
     private void EndTurn() {
+        if (m_disaster != null)
+            m_disaster.Advance(this);
         CardsEnabled = false;
         Board.instance.NextTurn();
     }
