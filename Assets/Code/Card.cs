@@ -46,7 +46,7 @@ public class Card : GameElement
 
             if (m_isCardActive) {
                 Board.instance.ToggleTiles((t) => {
-                    return t.HasAdjacentOrthogonalStone(Owner);
+                    return t.HasAdjacentOrthogonalStone(Owner) && t.State == BoardTileState.Clear;
                 });
             } else
                 Board.instance.ResetTiles();

@@ -2,6 +2,9 @@
 
 ## Bugs
 
+- only bottom-right is allowed for adding life as white, although all stones
+  are marked as white
+
 ## Features
 
 - show how many cards remaining in deck

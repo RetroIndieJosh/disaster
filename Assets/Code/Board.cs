@@ -148,8 +148,8 @@ public class Board : MonoBehaviour
                 ++whiteScore;
         }
 
-        m_playerBlack.ScoreTextMesh.text = $"{blackScore}";
-        m_playerWhite.ScoreTextMesh.text = $"{whiteScore}";
+        m_playerBlack.ScoreTextMesh.text = $"Black Score: {blackScore}";
+        m_playerWhite.ScoreTextMesh.text = $"White Score: {whiteScore}";
     }
 
 
