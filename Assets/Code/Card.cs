@@ -43,6 +43,13 @@ public class Card : MonoBehaviour
             Debug.Log($"Set card {name} " + (m_isCardActive ? "active" : "inactive"));
             pos.y = m_isCardActive ? Mathf.FloorToInt(height) / 2 : 0;
             rectTrans.anchoredPosition = pos;
+
+            if (m_isCardActive) {
+                Board.instance.ToggleTiles((t) => {
+                    return t.HasAdjacentOrthogonalStone(Owner);
+                });
+            } else
+                Board.instance.ResetTiles();
         }
     }
 

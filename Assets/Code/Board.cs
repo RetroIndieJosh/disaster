@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Board : MonoBehaviour
@@ -57,6 +58,62 @@ public class Board : MonoBehaviour
         ActiveCard.Play(a_tile);
     }
 
+    public bool CheckNeighborsBoth(int a_x, int a_y, BoardTileState a_state, int a_distance) {
+        return CheckNeighborsOrthogonal(a_x, a_y, a_state, a_distance)
+            || CheckNeighborsDiagonal(a_x, a_y, a_state, a_distance);
+    }
+
+    public bool CheckNeighborsDiagonal(int a_x, int a_y, BoardTileState a_state, int a_distance = 1) {
+        var stepList = new List<int>();
+        for (var i = 1; i <= a_distance; ++i) {
+            stepList.Add(i);
+            stepList.Add(-i);
+        }
+        foreach (var oy in stepList) {
+            foreach (var ox in stepList) {
+                if (TileMatch(a_x + ox, a_y + oy, a_state))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public bool CheckNeighborsOrthogonal(int a_x, int a_y, BoardTileState a_state, int a_distance = 1) {
+        var stepList = new List<int>();
+        for (var i = 1; i <= a_distance; ++i) {
+            stepList.Add(i);
+            stepList.Add(-i);
+        }
+        foreach (var ox in stepList) {
+            if (TileMatch(a_x + ox, a_y, a_state))
+                return true;
+        }
+        foreach (var oy in stepList) {
+            if (TileMatch(a_x, a_y + oy, a_state))
+                return true;
+        }
+        return false;
+    }
+
+    private bool TileMatch(int a_x, int a_y, BoardTileState a_state) {
+        return a_x > 0 && a_y > 0 && a_x < m_size && a_y < m_size && m_tileMap[a_x, a_y].State == a_state;
+    }
+
+    public void ToggleTiles(System.Func<BoardTile, bool> a_isInteractable) {
+        for (var y = 0; y < m_size; ++y) {
+            for (var x = 0; x < m_size; ++x) {
+                var button = m_tileMap[x, y].GetComponent<Button>();
+                button.interactable = a_isInteractable(m_tileMap[x, y]);
+            }
+        }
+    }
+
+    public void ResetTiles() {
+        ToggleTiles((t) => {
+            return true;
+        });
+    }
+
     public Sprite GetStoneSprite(PlayerColor a_color) {
         return a_color == PlayerColor.Black ? m_spriteStoneBlack : m_spriteStoneWhite;
     }
@@ -97,6 +154,8 @@ public class Board : MonoBehaviour
             for (var x = 0; x < m_size; ++x) {
                 m_tileMap[x, y] = Instantiate(m_tilePrefab, transform);
                 m_tileMap[x, y].name = $"Board Tile {x} {y}";
+                m_tileMap[x, y].x = x;
+                m_tileMap[x, y].y = y;
                 var rectTransform = m_tileMap[x, y].GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = pos;
                 pos.x += m_tileSize;

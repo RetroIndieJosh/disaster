@@ -30,21 +30,30 @@ public class BoardTile : MonoBehaviour
 {
     [SerializeField] private Image m_overlayImage = null;
 
-    Player m_controller = null;
-    Disaster m_disaster = null;
+    [HideInInspector] public int x = -1;
+    [HideInInspector] public int y = -1;
 
-    public bool IsClear => m_controller == null && m_disaster == null;
+    public BoardTileState State => m_state;
+
+    private Player m_controller = null;
+    private Disaster m_disaster = null;
+    private BoardTileState m_state = BoardTileState.Clear;
 
     public void Clear() {
         m_controller = null;
         SetOverlay(null);
     }
 
+    public bool HasAdjacentOrthogonalStone(Player a_player) {
+        var state = (a_player.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.White;
+        return Board.instance.CheckNeighborsOrthogonal(x, y, state) && m_state != state;
+    }
+
     public void SetStone(Player a_player) {
         Debug.Log($"Player {a_player} sets stone");
         m_controller = a_player;
-        var color = a_player.Color;
-        var sprite = Board.instance.GetStoneSprite(color);
+        m_state = (a_player.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.Clear;
+        var sprite = Board.instance.GetStoneSprite(a_player.Color);
         SetOverlay(sprite);
     }
 
