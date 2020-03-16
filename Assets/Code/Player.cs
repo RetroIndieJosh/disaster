@@ -15,18 +15,36 @@ public class Player : MonoBehaviour
     [SerializeField] private bool m_isHuman = true;
     [SerializeField] private PlayerColor m_color = PlayerColor.Black;
 
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI m_deckTextMesh = null;
     [SerializeField] private TextMeshProUGUI m_scoreTextMesh = null;
 
-    public PlayerColor Color => m_color;
-    public TextMeshProUGUI ScoreTextMesh => m_scoreTextMesh;
+    [Header("Deck")]
+    [SerializeField] private int m_cardMoveCount = 4;
+    [SerializeField] private int m_cardLifeCount = 4;
+    [SerializeField] private int m_cardStepCount = 4;
+    [SerializeField] private int m_cardWildCount = 1;
+    [SerializeField, Tooltip("All disasters plus Spread")] private int m_cardDisasterCount = 4;
 
+    public PlayerColor Color => m_color;
+    public int Score {
+        get => m_score;
+        set {
+            m_score = value;
+            m_scoreTextMesh.text = $"{m_color} Score: {m_score}";
+        }
+    }
+
+    private int m_score = 0;
     private Deck m_deck = new Deck();
     private Card[] m_handVisual = null;
 
     private bool CardsEnabled {
         set {
-        foreach( var card in m_handVisual)
-            card.GetComponent<Button>().interactable = value;
+            if (m_isHuman == false)
+                return;
+            foreach (var card in m_handVisual)
+                card.GetComponent<Button>().interactable = value;
         }
     }
 
@@ -47,7 +65,13 @@ public class Player : MonoBehaviour
     }
 
     private void DrawCards() {
+        if (m_deck.CardCount == 0) {
+            Board.instance.EndGame();
+            return;
+        }
         var count = (m_cardsPlayed == 0) ? Board.instance.HandSize : m_cardsPlayed;
+        if( m_deck.CardCount < count)
+            count = m_deck.CardCount;
         Debug.Log($"Draw {count} cards");
         for (var i = 0; i < count; ++i) {
             var cardType = m_deck.Draw();
@@ -64,19 +88,16 @@ public class Player : MonoBehaviour
             }
         }
         m_cardsPlayed = 0;
+
+        m_deckTextMesh.text = (m_deck.CardCount == 0) 
+            ? $"Last turn!" 
+            : $"Deck: {m_deck.CardCount}";
     }
 
     private void EndTurn() {
         CardsEnabled = false;
         Board.instance.NextTurn();
     }
-
-    [Header("Deck")]
-    [SerializeField] private int m_cardMoveCount = 4;
-    [SerializeField] private int m_cardLifeCount = 4;
-    [SerializeField] private int m_cardStepCount = 4;
-    [SerializeField] private int m_cardWildCount = 1;
-    [SerializeField, Tooltip("All disasters plus Spread")] private int m_cardDisasterCount = 4;
 
     private void Awake() {
         for (var i = 0; i < m_cardMoveCount; ++i)

@@ -35,7 +35,11 @@ public class Board : MonoBehaviour
     public int PlayPerTurn => m_playPerTurn;
 
     public string InfoText {
-        set => m_infoTextMesh.text = value;
+        set {
+            if (m_isGameOver)
+                return;
+            m_infoTextMesh.text = value;
+        }
     }
 
     private Player m_activePlayer = null;
@@ -105,9 +109,18 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    private bool TileMatch(int a_x, int a_y, BoardTileState a_state) {
-        return a_x > 0 && a_y > 0 && a_x < m_size && a_y < m_size && m_tileMap[a_x, a_y].State == a_state;
+    public void EndGame() {
+        UpdateScore();
+        var winner = "Tie";
+        if (m_playerBlack.Score > m_playerWhite.Score)
+            winner = "Black";
+        else if (m_playerWhite.Score > m_playerBlack.Score)
+            winner = "White";
+        InfoText = $"Game over! Winner: {winner}";
+        m_isGameOver = true;
     }
+
+    private bool m_isGameOver = false;
 
     public void ToggleTiles(System.Func<BoardTile, bool> a_isInteractable) {
         for (var y = 0; y < m_size; ++y) {
@@ -148,8 +161,8 @@ public class Board : MonoBehaviour
                 ++whiteScore;
         }
 
-        m_playerBlack.ScoreTextMesh.text = $"Black Score: {blackScore}";
-        m_playerWhite.ScoreTextMesh.text = $"White Score: {whiteScore}";
+        m_playerBlack.Score = blackScore;
+        m_playerWhite.Score = whiteScore;
     }
 
 
@@ -172,6 +185,10 @@ public class Board : MonoBehaviour
 
         m_activePlayer = m_playerBlack;
         m_activePlayer.StartTurn();
+    }
+
+    private bool TileMatch(int a_x, int a_y, BoardTileState a_state) {
+        return a_x >= 0 && a_y >= 0 && a_x < m_size && a_y < m_size && m_tileMap[a_x, a_y].State == a_state;
     }
 
     private void CreateTileButtons() {
