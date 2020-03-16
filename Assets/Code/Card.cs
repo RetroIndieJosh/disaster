@@ -45,9 +45,16 @@ public class Card : GameElement
             rectTrans.anchoredPosition = pos;
 
             if (m_isCardActive) {
-                Board.instance.ToggleTiles((t) => {
-                    return t.HasAdjacentOrthogonalStone(Owner) && t.State == BoardTileState.Clear;
-                });
+                if (m_type == CardType.Life) {
+                    Board.instance.ToggleTiles((t) => {
+                        return t.HasAdjacentOrthogonalStone(Owner) && t.State == BoardTileState.Clear;
+                    });
+                } else if (m_type == CardType.Move) {
+                    var state = (Owner.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.White;
+                    Board.instance.ToggleTiles((t) => {
+                        return t.State == state;
+                    });
+                }
             } else
                 Board.instance.ResetTiles();
         }
@@ -65,6 +72,13 @@ public class Card : GameElement
     public virtual void Play(BoardTile a_tile) {
         if (m_type == CardType.Life) {
             a_tile.SetStone(Owner);
+        } else if (m_type == CardType.Move) {
+            Board.instance.ToggleTiles((t) => {
+                return t.IsAdjacentOrthogonalTo(a_tile);
+            });
+            a_tile.Clear();
+            m_type = CardType.Life;
+            return;
         }
         Board.instance.ActiveCard = null;
         CardType = CardType.None;

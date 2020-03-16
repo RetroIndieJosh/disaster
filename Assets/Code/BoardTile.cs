@@ -47,7 +47,17 @@ public class BoardTile : GameElement
 
     public void Clear() {
         m_controller = null;
+        m_disaster = null;
+        m_state = BoardTileState.Clear;
         SetOverlay(null);
+    }
+
+    public bool IsAdjacentOrthogonalTo(BoardTile a_tile) {
+        var dx = a_tile.x - x;
+        var dy = a_tile.y - y;
+        return a_tile != this && (
+            (Mathf.Abs(dx) == 1 && Mathf.Abs(dy) == 0)
+            || (Mathf.Abs(dx) == 0 && Mathf.Abs(dy) == 1));
     }
 
     public bool HasAdjacentOrthogonalStone(Player a_player) {

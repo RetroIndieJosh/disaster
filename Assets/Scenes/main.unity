@@ -941,8 +941,8 @@ MonoBehaviour:
   m_color: 1
   m_deckTextMesh: {fileID: 118704224}
   m_scoreTextMesh: {fileID: 1833204599}
-  m_cardMoveCount: 0
-  m_cardLifeCount: 7
+  m_cardMoveCount: 3
+  m_cardLifeCount: 4
   m_cardStepCount: 0
   m_cardWildCount: 0
   m_cardDisasterCount: 0
@@ -1154,8 +1154,8 @@ MonoBehaviour:
   m_color: 0
   m_deckTextMesh: {fileID: 497708580}
   m_scoreTextMesh: {fileID: 2147049678}
-  m_cardMoveCount: 0
-  m_cardLifeCount: 8
+  m_cardMoveCount: 3
+  m_cardLifeCount: 4
   m_cardStepCount: 0
   m_cardWildCount: 0
   m_cardDisasterCount: 0
