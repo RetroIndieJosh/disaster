@@ -2,6 +2,8 @@
 
 ## Bugs
 
+- need to prevent changing/deactivating card when move turns into life (and also not change color)
+
 ## Features
 
 - move card: select stone, select where to move

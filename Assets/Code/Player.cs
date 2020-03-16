@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     private Deck m_deck = new Deck();
     private Card[] m_handVisual = null;
 
-    private bool CardsEnabled {
+    public bool CardsEnabled {
         set {
             if (m_isHuman == false)
                 return;
@@ -55,6 +55,8 @@ public class Player : MonoBehaviour
         Board.instance.UpdateScore();
         if (m_cardsPlayed >= Board.instance.PlayPerTurn)
             EndTurn();
+        else
+            CardsEnabled = true;
     }
 
     public void StartTurn() {

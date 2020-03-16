@@ -52,12 +52,19 @@ public class BoardTile : GameElement
         SetOverlay(null);
     }
 
-    public bool IsAdjacentOrthogonalTo(BoardTile a_tile) {
+    public bool IsAdjacentDiagonalTo(BoardTile a_tile, int a_distance = 1) {
+        var dx = a_tile.x - x;
+        var dy = a_tile.y - y;
+        return a_tile != this && Mathf.Abs(dx) == Mathf.Abs(dy) && Mathf.Abs(dx) <= a_distance 
+            && Mathf.Abs(dy) <= a_distance;
+    }
+
+    public bool IsAdjacentOrthogonalTo(BoardTile a_tile, int a_distance = 1) {
         var dx = a_tile.x - x;
         var dy = a_tile.y - y;
         return a_tile != this && (
-            (Mathf.Abs(dx) == 1 && Mathf.Abs(dy) == 0)
-            || (Mathf.Abs(dx) == 0 && Mathf.Abs(dy) == 1));
+            (Mathf.Abs(dx) <= a_distance && Mathf.Abs(dy) == 0)
+            || (Mathf.Abs(dx) == 0 && Mathf.Abs(dy) <= a_distance));
     }
 
     public bool HasAdjacentOrthogonalStone(Player a_player) {
@@ -66,7 +73,6 @@ public class BoardTile : GameElement
     }
 
     public void SetStone(Player a_player) {
-        Debug.Log($"Player {a_player} sets stone");
         m_controller = a_player;
         State = (a_player.Color == PlayerColor.Black) ? BoardTileState.Black : BoardTileState.White;
         var sprite = Board.instance.GetStoneSprite(a_player.Color);

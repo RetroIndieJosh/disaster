@@ -42,6 +42,8 @@ public class Card : GameElement
             m_isCardActive = value;
             Debug.Log($"Set card {name} " + (m_isCardActive ? "active" : "inactive"));
             pos.y = m_isCardActive ? Mathf.FloorToInt(height) / 2 : 0;
+            if (Owner.Color == PlayerColor.White)
+                pos.y = -pos.y;
             rectTrans.anchoredPosition = pos;
 
             if (m_isCardActive) {
@@ -74,10 +76,12 @@ public class Card : GameElement
             a_tile.SetStone(Owner);
         } else if (m_type == CardType.Move) {
             Board.instance.ToggleTiles((t) => {
-                return t.IsAdjacentOrthogonalTo(a_tile);
+                return t.State == BoardTileState.Clear
+                    && (t.IsAdjacentOrthogonalTo(a_tile, 2) || t.IsAdjacentDiagonalTo(a_tile));
             });
             a_tile.Clear();
             m_type = CardType.Life;
+            Owner.CardsEnabled = false;
             return;
         }
         Board.instance.ActiveCard = null;
