@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public enum PlayerColor
 {
@@ -14,7 +15,11 @@ public class Player : MonoBehaviour
     [SerializeField] private bool m_isHuman = true;
     [SerializeField] private PlayerColor m_color = PlayerColor.Black;
 
+    [SerializeField] private TextMeshProUGUI m_scoreTextMesh = null;
+
     public PlayerColor Color => m_color;
+    public TextMeshProUGUI ScoreTextMesh => m_scoreTextMesh;
+
     private Deck m_deck = new Deck();
     private Card[] m_handVisual = null;
 
@@ -29,6 +34,7 @@ public class Player : MonoBehaviour
 
     public void PlayedCard() {
         ++m_cardsPlayed;
+        Board.instance.UpdateScore();
         if (m_cardsPlayed >= Board.instance.PlayPerTurn)
             EndTurn();
     }

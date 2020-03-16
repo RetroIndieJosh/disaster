@@ -138,6 +138,21 @@ public class Board : MonoBehaviour
         m_activePlayer.StartTurn();
     }
 
+    public void UpdateScore() {
+        var blackScore = 0;
+        var whiteScore = 0;
+        foreach (var tile in m_tileMap) {
+            if (tile.State == BoardTileState.Black)
+                ++blackScore;
+            else if (tile.State == BoardTileState.White)
+                ++whiteScore;
+        }
+
+        m_playerBlack.ScoreTextMesh.text = $"{blackScore}";
+        m_playerWhite.ScoreTextMesh.text = $"{whiteScore}";
+    }
+
+
     private void Awake() {
         if (instance != null) {
             Destroy(gameObject);
@@ -153,6 +168,7 @@ public class Board : MonoBehaviour
         m_tileMap = new BoardTile[m_size, m_size];
         CreateTileButtons();
         PlaceInitialStones();
+        UpdateScore();
 
         m_activePlayer = m_playerBlack;
         m_activePlayer.StartTurn();
@@ -181,4 +197,5 @@ public class Board : MonoBehaviour
         foreach (var coord in m_initialStonesWhite)
             m_tileMap[coord.x, coord.y].SetStone(m_playerWhite);
     }
+
 }

@@ -78,24 +78,8 @@ public class BoardTile : GameElement
     }
 
     private void UpdateInfo() {
-        switch (m_state) {
-        /*
-        case BoardTileState.Black:
-            break;
-        case BoardTileState.Clear:
-            break;
-        case BoardTileState.Fire:
-            break;
-        case BoardTileState.Flood:
-            break;
-        case BoardTileState.Plague:
-            break;
-        case BoardTileState.White:
-            break;
-            */
-        default:
-            m_infoText = m_state.ToString();
-            break;
-        }
+        m_infoText = $"Board {x},{y}: {m_state}";
+        if( m_controller != null)
+            m_infoText += $"(Controlled by {m_controller.name})";
     }
 }

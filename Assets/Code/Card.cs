@@ -121,6 +121,7 @@ public class Card : GameElement
     }
 
     private void UpdateInfo() {
+        m_infoText = $"{Owner.name} Card: ";
         switch (m_type) {
         /*
         case CardType.Fire:
@@ -152,7 +153,7 @@ public class Card : GameElement
             break;
             */
         default:
-            m_infoText = m_type.ToString();
+            m_infoText += m_type.ToString();
             break;
         }
     }
