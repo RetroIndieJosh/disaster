@@ -40,7 +40,7 @@ public class Player : MonoBehaviour
     private int m_deadCount = 0;
     private Disaster m_disaster = null;
     private int m_score = 0;
-    private Deck m_deck = new Deck();
+    private Deck<System.Type> m_deck = new Deck<System.Type>();
     private Card[] m_handVisual = null;
 
     public bool CardsEnabled {
@@ -103,7 +103,7 @@ public class Player : MonoBehaviour
 
             if (m_isHuman) {
                 for (var k = 0; k < m_handVisual.Length; ++k) {
-                    if (m_handVisual[k].CardType == CardType.None) {
+                    if (m_handVisual[k].CardType == null) {
                         m_handVisual[k].CardType = cardType;
                         Debug.Log($"Drew {cardType} in visual slot {k}");
                         break;
@@ -126,9 +126,12 @@ public class Player : MonoBehaviour
 
     private void Awake() {
         for (var i = 0; i < m_cardMoveCount; ++i)
-            m_deck.Add(CardType.Move);
+            //m_deck.Add(CardType.Move);
+            m_deck.Add(typeof(CardActionMove));
         for (var i = 0; i < m_cardLifeCount; ++i)
-            m_deck.Add(CardType.Life);
+            //m_deck.Add(CardType.Life);
+            m_deck.Add(typeof(CardActionLife));
+        /*
         for (var i = 0; i < m_cardStepCount; ++i)
             m_deck.Add(CardType.Step);
         for (var i = 0; i < m_cardDisasterCount; ++i) {
@@ -139,6 +142,7 @@ public class Player : MonoBehaviour
         }
         for (var i = 0; i < m_cardWildCount; ++i)
             m_deck.Add(CardType.Wild);
+            */
 
         m_deck.Shuffle();
         InitializeVisualHand();

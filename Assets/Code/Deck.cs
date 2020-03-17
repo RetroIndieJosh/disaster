@@ -2,24 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Deck
+public class Deck<T>
 {
     private bool m_debug = false;
-    private List<CardType> m_cardList = new List<CardType>();
+    private List<T> m_cardList = new List<T>();
 
-    public CardType this[int i] {
+    public T this[int i] {
         get {
             if (m_cardList == null) {
                 Debug.LogError("Null card list");
-                return CardType.None;
+                return default;
             }
 
             if (i < 0 || i >= CardCount) {
                 Debug.LogError($"[Deck] Card index {i} invalid");
-                return CardType.None;
+                return default;
             }
             return m_cardList[i];
         }
+        
         private set {
             if (i < 0 || i >= CardCount) {
                 Debug.LogError($"[Deck] Card index {i} invalid");
@@ -41,15 +42,15 @@ public class Deck
         return str.Substring(0, str.Length - 2);
     }
 
-    public int CountCardsOfType(CardType a_card) {
+    public int CountCardsOfType(T a_card) {
         var count = 0;
         foreach (var card in m_cardList)
-            if (card == a_card)
+            if (card.Equals(a_card))
                 ++count;
         return count;
     }
 
-    public void Add(CardType a_card) {
+    public void Add(T a_card) {
         m_cardList.Add(a_card);
     }
 
@@ -57,7 +58,7 @@ public class Deck
         m_cardList.Clear();
     }
 
-    public CardType Draw(bool a_keep = false) {
+    public T Draw(bool a_keep = false) {
         var ret = m_cardList[0];
         if (a_keep == false)
             m_cardList.RemoveAt(0);

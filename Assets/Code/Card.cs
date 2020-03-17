@@ -4,25 +4,26 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public enum CardType
-{
-    None = 0x00,
-    Move = 0x01, // move up to two
-    Life = 0x02, // add one
-    Step = 0x04, // advance one
-    Spread = 0x08, // advance two
-    Fire = 0x0F,
-    Water = 0x10,
-    Plague = 0x11,
-    Wild = 0x12,
-    DirectionBlack = 0x14,
-    DirectionWhite = 0x18,
-    Reserved3 = 0x1F
-}
-
 [RequireComponent(typeof(Button))]
 public class Card : GameElement
 {
+    public System.Type CardType {
+        get => m_type;
+        set {
+            if (value != null && value.IsSubclassOf(typeof(CardAction)) == false) {
+                Debug.LogError($"Tried to set card type to illegal type {value}");
+                return;
+            }
+            m_type = value;
+            m_button.interactable = m_type != null;
+            m_action = m_type == null ? null : (CardAction)System.Activator.CreateInstance(m_type);
+            if( m_action != null)
+                m_action.Owner = Owner;
+            UpdateColor();
+            UpdateInfo();
+        }
+    }
+
     public Player Owner {
         private get; set;
     }
@@ -30,19 +31,17 @@ public class Card : GameElement
     public UnityEvent m_onPlayed = new UnityEvent();
 
     Button m_button = null;
-    private CardType m_type = CardType.None;
+    private CardAction m_action = null;
+    private System.Type m_type = null;
     private bool m_isCardActive = false;
     private BoardTile m_originTile = null;
 
     private void Activate() {
-        if (m_type == CardType.Life) {
-            Board.instance.ToggleTiles((t) => {
-                return t.HasAdjacentOrthogonalStone(Owner) && t.IsClear;
-            });
+        if (m_action == null)
+            return;
+        m_action.Activate();
+        /*
         } else if (m_type == CardType.Move) {
-            Board.instance.ToggleTiles((t) => {
-                return t.StoneColor == Owner.Color;
-            });
         } else if (m_type == CardType.Step || m_type == CardType.Spread) {
             if (Owner.ActiveDisaster == null) {
                 Board.instance.ActiveCard = null;
@@ -69,6 +68,7 @@ public class Card : GameElement
                 return t.HasAdjacentOrthogonalStone(Owner) && t.IsClear;
             });
         }
+        */
     }
 
     public bool IsCardActive {
@@ -91,16 +91,15 @@ public class Card : GameElement
         }
     }
 
-    public CardType CardType {
-        get => m_type;
-        set {
-            m_type = value;
-            UpdateColor();
-            UpdateInfo();
-        }
-    }
-
-    public virtual void Play(BoardTile a_tile) {
+    public void Play(BoardTile a_tile) {
+        var done = m_action.Execute(a_tile);
+        if (done) {
+            Board.instance.ActiveCard = null;
+            CardType = null;
+            Owner.PlayedCard();
+        } else
+            m_action.Activate();
+        /*
         // single step
         if (m_type == CardType.Life) {
             if (m_originTile != null)
@@ -130,6 +129,7 @@ public class Card : GameElement
         Board.instance.ActiveCard = null;
         CardType = CardType.None;
         Owner.PlayedCard();
+        */
     }
 
     private void SetDisasterDirection(Player a_player, BoardTile a_endTile) {
@@ -161,13 +161,17 @@ public class Card : GameElement
     private void Update() {
         if (Board.instance.ActivePlayer != Owner)
             return;
+        /*
         if (m_type == CardType.Step || m_type == CardType.Spread)
             m_button.interactable = Owner.ActiveDisaster != null;
+            */
     }
 
     private void UpdateColor() {
         gameObject.SetActive(true);
         var colors = m_button.colors;
+        colors.normalColor = (m_action == null) ? Color.black : m_action.Color;
+        /*
         switch (m_type) {
         case CardType.Fire:
             colors.normalColor = Color.red;
@@ -198,6 +202,7 @@ public class Card : GameElement
             colors.normalColor = new Color(0.8f, 0.0f, 0.5f);
             break;
         }
+        */
         var r = colors.normalColor.r;
         var g = colors.normalColor.g;
         var b = colors.normalColor.b;
@@ -239,7 +244,8 @@ public class Card : GameElement
             break;
             */
         default:
-            m_infoText += m_type.ToString();
+            if( m_action != null)
+                m_infoText += m_action.ToString();
             break;
         }
         if (m_button.interactable == false)

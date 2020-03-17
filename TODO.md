@@ -4,12 +4,11 @@
 
 ## Features
 
+- allow water to turn toward water (but not back in on itself?)
 - skip first turn auto advance?
         - spread card: as two step cards
         - advancement onto water stops
-        - advancement onto stone kills stone
         - water card when active disaster is water: as spread
-- disable step/spread if no active disaster
 - fire card: as water but double speed
         - water card when active disaster is fire: as step
         - fire card when active disaster is fire: as spread
