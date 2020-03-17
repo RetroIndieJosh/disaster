@@ -24,6 +24,7 @@ public enum Direction
 
 public class Disaster
 {
+    public bool IsAlive => Head.HasControlledDisaster;
     public int Length => m_tileList.Count;
     public BoardTile Head => m_tileList[m_tileList.Count - 1];
     private BoardTile Tail => m_tileList[0];
@@ -41,19 +42,38 @@ public class Disaster
     }
 
     public void Advance() {
+        if (DisasterType == DisasterType.Fire)
+            StepAdvance();
+        StepAdvance();
+    }
+
+    private void StepAdvance() {
         // add one past the head in its facing direction
         var controller = Head.Controller;
         Head.Controller = null;
-        var next = Head.NextTile();
+        var next = Head.NextTile;
+
+        // stop at water or edge of board
         if (next == null
             || (next.Disaster != null && next.Disaster.DisasterType == DisasterType.Water)) {
-            Head.Controller.ClearDisaster();
+            controller.ClearDisaster();
             return;
         }
-        if (next.StoneColor != PlayerColor.None)
+
+        // overwrite controlled fire or plague
+        if (next.HasControlledDisaster 
+            && (next.Disaster.DisasterType == DisasterType.Fire 
+                || next.Disaster.DisasterType == DisasterType.Plague)) {
+            next.Controller.ClearDisaster();
+        }
+
+        // kill stone
+        if (next.HasStone)
             next.Controller.Kill();
+
         next.Disaster = this;
         next.Controller = controller;
+        next.Direction = Head.Direction;
         m_tileList.Add(next);
     }
 }

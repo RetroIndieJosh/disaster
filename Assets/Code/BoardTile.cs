@@ -11,7 +11,8 @@ public class BoardTile : GameElement
     [HideInInspector] public int y = -1;
 
     public bool IsClear => m_controller == null && m_disaster == null;
-    public bool IsControlledDisaster => m_controller != null && m_disaster != null;
+    public bool HasStone => m_controller != null && m_disaster == null; 
+    public bool HasControlledDisaster => m_controller != null && m_disaster != null;
     public PlayerColor StoneColor 
         => m_controller == null || m_disaster != null
             ? PlayerColor.None
@@ -21,6 +22,7 @@ public class BoardTile : GameElement
         get => m_disaster;
         set {
             m_disaster = value;
+            UpdateInfo();
             UpdateOverlay();
         }
     }
@@ -29,6 +31,7 @@ public class BoardTile : GameElement
         get => m_controller;
         set {
             m_controller = value;
+            UpdateInfo();
             UpdateOverlay();
         }
     }
@@ -39,6 +42,7 @@ public class BoardTile : GameElement
     public void Clear() {
         m_controller = null;
         m_disaster = null;
+        UpdateInfo();
         UpdateOverlay();
     }
 
@@ -66,24 +70,27 @@ public class BoardTile : GameElement
 
     private Direction m_direction = Direction.None;
     public Direction Direction {
+        get => m_direction;
         set {
             m_direction = value;
             UpdateOverlay();
         }
     }
 
-    public BoardTile NextTile() {
-        var dx = 0;
-        var dy = 0;
-        if (m_direction == Direction.East || m_direction == Direction.Northeast || m_direction == Direction.Southeast)
-            dx = 1;
-        if (m_direction == Direction.West || m_direction == Direction.Northwest || m_direction == Direction.Southwest)
-            dx = -1;
-        if (m_direction == Direction.North || m_direction == Direction.Northeast || m_direction == Direction.Northwest)
-            dy = -1;
-        if (m_direction == Direction.South || m_direction == Direction.Southeast || m_direction == Direction.Southwest)
-            dy = 1;
-        return Board.instance.GetTile(x + dx, y + dy);
+    public BoardTile NextTile {
+        get {
+            var dx = 0;
+            var dy = 0;
+            if (m_direction == Direction.East || m_direction == Direction.Northeast || m_direction == Direction.Southeast)
+                dx = 1;
+            if (m_direction == Direction.West || m_direction == Direction.Northwest || m_direction == Direction.Southwest)
+                dx = -1;
+            if (m_direction == Direction.North || m_direction == Direction.Northeast || m_direction == Direction.Northwest)
+                dy = -1;
+            if (m_direction == Direction.South || m_direction == Direction.Southeast || m_direction == Direction.Southwest)
+                dy = 1;
+            return Board.instance.GetTile(x + dx, y + dy);
+        }
     }
 
     private void Start() {

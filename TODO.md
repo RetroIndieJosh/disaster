@@ -4,7 +4,8 @@
 
 ## Features
 
-- allow water to turn toward water (but not back in on itself?)
+- allow water to turn toward water 
+- disallow water turning back on itself
 - skip first turn auto advance?
         - spread card: as two step cards
         - advancement onto water stops

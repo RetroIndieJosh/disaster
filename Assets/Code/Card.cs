@@ -40,35 +40,6 @@ public class Card : GameElement
         if (m_action == null)
             return;
         m_action.Activate();
-        /*
-        } else if (m_type == CardType.Move) {
-        } else if (m_type == CardType.Step || m_type == CardType.Spread) {
-            if (Owner.ActiveDisaster == null) {
-                Board.instance.ActiveCard = null;
-                return;
-            }
-            // TODO should check if this succeeds, if not we're not going to set direction
-            Owner.ActiveDisaster.Advance(Owner);
-            m_originTile = Owner.ActiveDisaster.Head;
-            Board.instance.ToggleTiles((t) => {
-                if (t.Disaster != null && t.Disaster.DisasterType == DisasterType.Water)
-                    return false;
-                return t.IsAdjacentOrthogonalTo(m_originTile);
-            });
-            m_type = (Owner.Color == PlayerColor.Black) ? CardType.DirectionBlack : CardType.DirectionWhite;
-        } else if (m_type == CardType.Water) {
-            if (Owner.ActiveDisaster != null && Owner.ActiveDisaster.DisasterType == DisasterType.Water) {
-                m_type = CardType.Spread;
-                Activate();
-                return;
-            }
-            // TODO ask "step or new" if both available
-            // spawn
-            Board.instance.ToggleTiles((t) => {
-                return t.HasAdjacentOrthogonalStone(Owner) && t.IsClear;
-            });
-        }
-        */
     }
 
     public bool IsCardActive {
@@ -99,37 +70,6 @@ public class Card : GameElement
             Owner.PlayedCard();
         } else
             m_action.Activate();
-        /*
-        // single step
-        if (m_type == CardType.Life) {
-            if (m_originTile != null)
-                m_originTile.Clear();
-            a_tile.Controller = Owner;
-        } else if (m_type == CardType.DirectionBlack) {
-            SetDisasterDirection(Board.instance.PlayerBlack, a_tile);
-        } else if (m_type == CardType.DirectionWhite) {
-            SetDisasterDirection(Board.instance.PlayerWhite, a_tile);
-        } else { // multistep
-            if (m_type == CardType.Move) {
-                Board.instance.ToggleTiles((t) => {
-                    return t.IsClear && (t.IsAdjacentOrthogonalTo(a_tile, 2) || t.IsAdjacentDiagonalTo(a_tile));
-                });
-                m_type = CardType.Life;
-            } else if (m_type == CardType.Water) {
-                Board.instance.ToggleTiles((t) => {
-                    return t.IsAdjacentOrthogonalTo(a_tile);
-                });
-                Owner.CreateDisaster(DisasterType.Water, a_tile);
-                m_type = (Owner.Color == PlayerColor.Black) ? CardType.DirectionBlack : CardType.DirectionWhite;
-            }
-            Owner.CardsEnabled = false;
-            m_originTile = a_tile;
-            return;
-        }
-        Board.instance.ActiveCard = null;
-        CardType = CardType.None;
-        Owner.PlayedCard();
-        */
     }
 
     private void SetDisasterDirection(Player a_player, BoardTile a_endTile) {
@@ -150,10 +90,6 @@ public class Card : GameElement
     private void Update() {
         if (Board.instance.ActivePlayer != Owner)
             return;
-        /*
-        if (m_type == CardType.Step || m_type == CardType.Spread)
-            m_button.interactable = Owner.ActiveDisaster != null;
-            */
     }
 
     private void UpdateColor() {
@@ -168,6 +104,7 @@ public class Card : GameElement
         var b = colors.normalColor.b;
         var mult = 0.8f;
         colors.highlightedColor = new Color(r * mult, g * mult, b * mult);
+        colors.selectedColor = new Color(r / mult, g / mult, b / mult);
         m_button.colors = colors;
     }
 

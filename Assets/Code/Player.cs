@@ -37,6 +37,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    private int m_cardsPlayed = -1;
     private int m_deadCount = 0;
     private Disaster m_disaster = null;
     private int m_score = 0;
@@ -52,9 +53,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    private int m_cardsPlayed = -1;
-
     public void ClearDisaster() {
+        m_disaster.Head.Controller = null;
         m_disaster = null;
     }
 
@@ -134,7 +134,7 @@ public class Player : MonoBehaviour
             m_deck.Add(CardType.Step);
             */
         for (var i = 0; i < m_cardDisasterCount; ++i) {
-            //m_deck.Add(CardType.Fire);
+            m_deck.Add(typeof(CardActionFire));
             m_deck.Add(typeof(CardActionWater));
             //m_deck.Add(CardType.Plague);
             //m_deck.Add(CardType.Spread);
