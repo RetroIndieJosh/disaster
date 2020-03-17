@@ -25,11 +25,17 @@ public class Board : MonoBehaviour
     [SerializeField] private Sprite m_spriteDisasterPlague = null;
     [SerializeField] private Sprite m_spriteDisasterWater = null;
     [SerializeField] private Sprite m_spriteDisasterFireBlack = null;
+    [SerializeField] private Sprite m_spriteDisasterFireBlackNeutral = null;
     [SerializeField] private Sprite m_spriteDisasterPlagueBlack = null;
+    [SerializeField] private Sprite m_spriteDisasterPlagueBlackNeutral = null;
     [SerializeField] private Sprite m_spriteDisasterWaterBlack = null;
+    [SerializeField] private Sprite m_spriteDisasterWaterBlackNeutral = null;
     [SerializeField] private Sprite m_spriteDisasterFireWhite = null;
+    [SerializeField] private Sprite m_spriteDisasterFireWhiteNeutral = null;
     [SerializeField] private Sprite m_spriteDisasterPlagueWhite = null;
+    [SerializeField] private Sprite m_spriteDisasterPlagueWhiteNeutral = null;
     [SerializeField] private Sprite m_spriteDisasterWaterWhite = null;
+    [SerializeField] private Sprite m_spriteDisasterWaterWhiteNeutral = null;
 
     [Header("Prefabs")]
     [SerializeField] private Card m_cardPrefab = null;
@@ -158,18 +164,30 @@ public class Board : MonoBehaviour
                 : m_spriteDisasterWater;
     }
 
-    public Sprite GetDisasterSprite(DisasterType a_disaster, PlayerColor a_color) {
-        return a_color == PlayerColor.Black
-            ? a_disaster == DisasterType.Fire
-                ? m_spriteDisasterFireBlack
-                : a_disaster == DisasterType.Plague
-                    ? m_spriteDisasterPlagueBlack
-                    : m_spriteDisasterWaterBlack
-            : a_disaster == DisasterType.Fire
-                ? m_spriteDisasterFireWhite
-                : a_disaster == DisasterType.Plague
-                    ? m_spriteDisasterPlagueWhite
-                    : m_spriteDisasterWaterWhite;
+    public Sprite GetDisasterSprite(DisasterType a_disaster, PlayerColor a_color, bool a_isNeutral) {
+        return a_isNeutral
+            ? a_color == PlayerColor.Black
+                ? a_disaster == DisasterType.Fire
+                    ? m_spriteDisasterFireBlackNeutral
+                    : a_disaster == DisasterType.Plague
+                        ? m_spriteDisasterPlagueBlackNeutral
+                        : m_spriteDisasterWaterBlackNeutral
+                : a_disaster == DisasterType.Fire
+                    ? m_spriteDisasterFireWhiteNeutral
+                    : a_disaster == DisasterType.Plague
+                        ? m_spriteDisasterPlagueWhiteNeutral
+                        : m_spriteDisasterWaterWhiteNeutral
+            : a_color == PlayerColor.Black
+                ? a_disaster == DisasterType.Fire
+                    ? m_spriteDisasterFireBlack
+                    : a_disaster == DisasterType.Plague
+                        ? m_spriteDisasterPlagueBlack
+                        : m_spriteDisasterWaterBlack
+                : a_disaster == DisasterType.Fire
+                    ? m_spriteDisasterFireWhite
+                    : a_disaster == DisasterType.Plague
+                        ? m_spriteDisasterPlagueWhite
+                        : m_spriteDisasterWaterWhite;
     }
 
     public Sprite GetStoneSprite(PlayerColor a_color) {

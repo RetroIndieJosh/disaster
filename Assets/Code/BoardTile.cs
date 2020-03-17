@@ -119,7 +119,8 @@ public class BoardTile : GameElement
         } else if (m_disaster != null) {
             sprite = m_controller == null
                 ? Board.instance.GetDisasterSprite(m_disaster.DisasterType)
-                : Board.instance.GetDisasterSprite(m_disaster.DisasterType, m_controller.Color);
+                : Board.instance.GetDisasterSprite(m_disaster.DisasterType, m_controller.Color, 
+                    m_direction == Direction.None);
 
             m_overlayImage.transform.rotation = Quaternion.identity;
             if (m_direction == Direction.North)

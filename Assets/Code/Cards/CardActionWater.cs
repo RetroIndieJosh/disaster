@@ -35,15 +35,18 @@ public class CardActionDisaster: CardAction
         });
     }
 
+    private int m_steps = 0;
+
     public override bool Execute(BoardTile a_tile) {
         if (m_disaster == null) {
             if (a_tile.Disaster == null) {
                 Owner.CreateDisaster(m_disasterType, a_tile);
                 m_disaster = Owner.ActiveDisaster;
-                return false;
+            } else {
+                m_disaster = a_tile.Disaster;
+                m_disaster.Advance();
             }
-            m_disaster = a_tile.Disaster;
-            m_disaster.Advance();
+            m_steps = (m_disaster.DisasterType == m_disasterType) ? 2 : 1;
             return false;
         }
         var dir = Direction.None;
@@ -57,7 +60,11 @@ public class CardActionDisaster: CardAction
             dir = Direction.South;
         Debug.Log($"Disaster dir: {dir}");
         m_disaster.Direction = dir;
-        return true;
+
+        --m_steps;
+        if (m_steps > 0)
+            m_disaster.Advance();
+        return m_steps <= 0;
     }
 }
 
