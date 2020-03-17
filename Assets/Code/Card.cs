@@ -56,13 +56,13 @@ public class Card : GameElement
                     return false;
                 return t.IsAdjacentOrthogonalTo(m_originTile);
             });
-            if (m_type == CardType.Spread)
-                m_type = CardType.Step;
-            else
-                m_type = (Owner.Color == PlayerColor.Black) ? CardType.DirectionBlack : CardType.DirectionWhite;
+            m_type = (Owner.Color == PlayerColor.Black) ? CardType.DirectionBlack : CardType.DirectionWhite;
         } else if (m_type == CardType.Water) {
-            if( Owner.ActiveDisaster != null && Owner.ActiveDisaster.DisasterType == DisasterType.Water)
+            if (Owner.ActiveDisaster != null && Owner.ActiveDisaster.DisasterType == DisasterType.Water) {
                 m_type = CardType.Spread;
+                Activate();
+                return;
+            }
             // TODO ask "step or new" if both available
             // spawn
             Board.instance.ToggleTiles((t) => {
@@ -159,6 +159,8 @@ public class Card : GameElement
     }
 
     private void Update() {
+        if (Board.instance.ActivePlayer != Owner)
+            return;
         if (m_type == CardType.Step || m_type == CardType.Spread)
             m_button.interactable = Owner.ActiveDisaster != null;
     }

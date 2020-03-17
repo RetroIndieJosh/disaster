@@ -4,12 +4,7 @@
 
 ## Features
 
-        - choose new facing after advancement
-        - disable change of disaster if trail < 3
-        - keep a list of inactive disasters to step at end of turn from Board
-        - count kills for game result (if tied on life)
 - skip first turn auto advance?
-- step card: auto-move active disaster, select facing
         - spread card: as two step cards
         - advancement onto water stops
         - advancement onto stone kills stone
@@ -28,6 +23,13 @@
         - plague card when active disaster is water: as step
         - plague card when active disaster is fire: as step
 - wild card: select which card to copy, use that logic
+
+- disable change of disaster if trail < 3
+- auto advancement (enable with checkbox)
+        - choose new facing on auto advancement
+- allow stepping opponent cards
+- fire/plague/water as turn cards
+- spread can be used as turn (or turn as its own card)
 
 - card info from text file
 - more modular setup for card/board actions

@@ -42,6 +42,7 @@ public class Board : MonoBehaviour
 
     public Card CardPrefab => m_cardPrefab;
     public int HandSize => m_handSize;
+    public Player ActivePlayer => m_activePlayer;
     public Player PlayerBlack => m_playerBlack;
     public Player PlayerWhite => m_playerWhite;
     public int PlayPerTurn => m_playPerTurn;

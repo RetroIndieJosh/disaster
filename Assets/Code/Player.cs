@@ -33,10 +33,11 @@ public class Player : MonoBehaviour
         get => m_score;
         set {
             m_score = value;
-            m_scoreTextMesh.text = $"{m_color} Score: {m_score}";
+            m_scoreTextMesh.text = $"{m_color} Alive: {m_score} / Dead: {m_deadCount}";
         }
     }
 
+    private int m_deadCount = 0;
     private Disaster m_disaster = null;
     private int m_score = 0;
     private Deck m_deck = new Deck();
@@ -66,6 +67,10 @@ public class Player : MonoBehaviour
         m_disaster = new Disaster(a_disasterType, a_tile);
         a_tile.Controller = this;
         a_tile.Disaster = m_disaster;
+    }
+
+    public void Kill() {
+        ++m_deadCount;
     }
 
     public void PlayedCard() {

@@ -44,10 +44,13 @@ public class Disaster
         // add one past the head in its facing direction
         Head.Controller = null;
         var next = Head.NextTile();
-        if (next == null) {
+        if (next == null
+            || (next.Disaster != null && next.Disaster.DisasterType == DisasterType.Water)) {
             a_owner.ClearDisaster();
             return;
         }
+        if (next.StoneColor != PlayerColor.None)
+            next.Controller.Kill();
         next.Disaster = this;
         next.Controller = a_owner;
         m_tileList.Add(next);
