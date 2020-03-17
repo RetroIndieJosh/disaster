@@ -50,22 +50,24 @@ public class Disaster
     private void StepAdvance() {
         // add one past the head in its facing direction
         var controller = Head.Controller;
+        if (controller == null)
+            return;
+
         Head.Controller = null;
         var next = Head.NextTile;
 
-        // stop at water or edge of board
+        // stop at edge of board
+        // water or fire stops fire or plague
         if (next == null
-            || (next.Disaster != null && next.Disaster.DisasterType == DisasterType.Water)) {
+            || (next.Disaster != null && DisasterType != DisasterType.Water 
+            && next.Disaster.DisasterType != DisasterType.Plague)) {
             controller.ClearDisaster();
             return;
         }
 
-        // overwrite controlled fire or plague
-        if (next.HasControlledDisaster 
-            && (next.Disaster.DisasterType == DisasterType.Fire 
-                || next.Disaster.DisasterType == DisasterType.Plague)) {
+        // overwrite controlled disaster
+        if (next.HasControlledDisaster)
             next.Controller.ClearDisaster();
-        }
 
         // kill stone
         if (next.HasStone)

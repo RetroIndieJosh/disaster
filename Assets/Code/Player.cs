@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     [Header("Deck")]
     [SerializeField] private int m_cardMoveCount = 4;
     [SerializeField] private int m_cardLifeCount = 4;
-    [SerializeField] private int m_cardStepCount = 4;
+    [SerializeField] private int m_cardExtendCount = 4;
     [SerializeField] private int m_cardWildCount = 1;
     [SerializeField, Tooltip("All disasters plus Spread")] private int m_cardDisasterCount = 4;
 
@@ -129,15 +129,13 @@ public class Player : MonoBehaviour
             m_deck.Add(typeof(CardActionMove));
         for (var i = 0; i < m_cardLifeCount; ++i)
             m_deck.Add(typeof(CardActionLife));
-        /*
-        for (var i = 0; i < m_cardStepCount; ++i)
-            m_deck.Add(CardType.Step);
-            */
+        for (var i = 0; i < m_cardExtendCount; ++i)
+            m_deck.Add(typeof(CardActionExtend));
         for (var i = 0; i < m_cardDisasterCount; ++i) {
             m_deck.Add(typeof(CardActionFire));
             m_deck.Add(typeof(CardActionWater));
             //m_deck.Add(CardType.Plague);
-            //m_deck.Add(CardType.Spread);
+            m_deck.Add(typeof(CardActionSpread));
         }
         /*
         for (var i = 0; i < m_cardWildCount; ++i)

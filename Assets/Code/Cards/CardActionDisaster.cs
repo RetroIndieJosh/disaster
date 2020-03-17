@@ -22,7 +22,7 @@ public class CardActionDisaster: CardAction
             if (Owner.ActiveDisaster == null) {
                 // select target disaster or placement
                 Board.instance.ToggleTiles((t) => {
-                    return t.HasControlledDisaster || (t.HasAdjacentOrthogonalStone(Owner) && t.IsClear);
+                    return t.HasControlledDisaster || (t.HasAdjacentOrthogonalStone(Owner) && t.HasStone == false);
                 });
                 return;
             }
@@ -34,7 +34,7 @@ public class CardActionDisaster: CardAction
         }
         // allowed directions 
         Board.instance.ToggleTiles((t) => {
-            return t.IsAdjacentOrthogonalTo(m_disaster.Head, m_moveSpeed, false) && t.HasStone == false;
+            return t.IsAdjacentOrthogonalTo(m_disaster.Head, m_moveSpeed, false);
         });
     }
 

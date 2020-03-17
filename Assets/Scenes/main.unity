@@ -1116,7 +1116,7 @@ MonoBehaviour:
   m_autoAdvance: 0
   m_spriteStoneBlack: {fileID: 21300000, guid: 7671114442aadbf468f25dc5f3ff1be6, type: 3}
   m_spriteStoneWhite: {fileID: 21300000, guid: 663c8bfc4fc19f549994e0d7f40f404e, type: 3}
-  m_spriteDisasterFire: {fileID: 21300000, guid: 5bdcdd704ba2a3e4888ed2b09f514582,
+  m_spriteDisasterFire: {fileID: 21300000, guid: fe13b2014163a9d4d850a64a42af78a3,
     type: 3}
   m_spriteDisasterPlague: {fileID: 21300000, guid: ee6541942db22cd47914740712b56b7c,
     type: 3}
@@ -1431,11 +1431,11 @@ MonoBehaviour:
   m_color: 2
   m_deckTextMesh: {fileID: 118704224}
   m_scoreTextMesh: {fileID: 1833204599}
-  m_cardMoveCount: 1
-  m_cardLifeCount: 1
-  m_cardStepCount: 0
+  m_cardMoveCount: 4
+  m_cardLifeCount: 4
+  m_cardStepCount: 4
   m_cardWildCount: 0
-  m_cardDisasterCount: 8
+  m_cardDisasterCount: 2
 --- !u!224 &1421387994
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1644,11 +1644,11 @@ MonoBehaviour:
   m_color: 1
   m_deckTextMesh: {fileID: 497708580}
   m_scoreTextMesh: {fileID: 2147049678}
-  m_cardMoveCount: 1
-  m_cardLifeCount: 1
-  m_cardStepCount: 0
+  m_cardMoveCount: 4
+  m_cardLifeCount: 4
+  m_cardStepCount: 4
   m_cardWildCount: 0
-  m_cardDisasterCount: 8
+  m_cardDisasterCount: 2
 --- !u!224 &1990231394
 RectTransform:
   m_ObjectHideFlags: 0

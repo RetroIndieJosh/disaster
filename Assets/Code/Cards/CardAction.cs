@@ -13,6 +13,10 @@ public abstract class CardAction {
         protected get; set;
     } = null;
 
+    public bool IsPlayable {
+        get; protected set;
+    } = true;
+
     virtual public void Activate() { }
 
     virtual public bool Execute(BoardTile a_tile) {

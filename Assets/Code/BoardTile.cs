@@ -124,7 +124,7 @@ public class BoardTile : GameElement
         if (StoneColor != PlayerColor.None) {
             sprite = Board.instance.GetStoneSprite(StoneColor);
         } else if (m_disaster != null) {
-            sprite = m_controller == null
+            sprite = (m_controller == null)
                 ? Board.instance.GetDisasterSprite(m_disaster.DisasterType)
                 : Board.instance.GetDisasterSprite(m_disaster.DisasterType, m_controller.Color, 
                     m_direction == Direction.None);
