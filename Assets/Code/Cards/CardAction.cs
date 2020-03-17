@@ -7,6 +7,8 @@ public abstract class CardAction {
         get; protected set;
     } = Color.black;
 
+    public string Info = "";
+
     public Player Owner {
         protected get; set;
     } = null;
@@ -23,13 +25,17 @@ public abstract class CardAction {
         Owner = a_owner;
     }
 
-    protected void Death(BoardTile a_tile) {
+    protected void RemoveStone(BoardTile a_tile) {
         // TODO mark for death at end of card play rather than immediately
         a_tile.Controller = null;
     }
 
-    protected void Life(BoardTile a_tile) {
+    protected void AddStone(BoardTile a_tile) {
         a_tile.Controller = Owner;
+    }
+
+    protected void CreateDisaster(DisasterType a_type, BoardTile a_tile) {
+        Owner.CreateDisaster(a_type, a_tile);
     }
 }
 

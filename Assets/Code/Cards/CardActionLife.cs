@@ -7,6 +7,7 @@ public class CardActionLife: CardAction
     public CardActionLife() : this(null) { }
     public CardActionLife(Player a_owner) : base(a_owner) {
         Color = Color.green;
+        Info = "Basic ~ Life";
     }
 
     public override void Activate() {
@@ -16,7 +17,7 @@ public class CardActionLife: CardAction
     }
 
     public override bool Execute(BoardTile a_tile) {
-        Life(a_tile);
+        AddStone(a_tile);
         return true;
     }
 }

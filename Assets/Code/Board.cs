@@ -187,7 +187,7 @@ public class Board : MonoBehaviour
 
     public void NextTurn() {
         if (m_autoAdvance && m_activePlayer.ActiveDisaster != null)
-            m_activePlayer.ActiveDisaster.Advance(m_activePlayer);
+            m_activePlayer.ActiveDisaster.Advance();
         m_activePlayer = (m_activePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;
         Debug.Log($"{m_activePlayer}'s turn");
         m_activePlayer.StartTurn();

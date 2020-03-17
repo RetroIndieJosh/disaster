@@ -9,6 +9,7 @@ public class CardActionMove: CardAction
     public CardActionMove() : this(null) { }
     public CardActionMove(Player a_owner) : base(a_owner) {
         Color = Color.white;
+        Info = "Basic ~ Move";
     }
 
     public override void Activate() {
@@ -28,8 +29,8 @@ public class CardActionMove: CardAction
             m_target = a_tile;
             return false;
         }
-        Death(m_target);
-        Life(a_tile);
+        RemoveStone(m_target);
+        AddStone(a_tile);
         return true;
     }
 }

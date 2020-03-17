@@ -126,20 +126,20 @@ public class Player : MonoBehaviour
 
     private void Awake() {
         for (var i = 0; i < m_cardMoveCount; ++i)
-            //m_deck.Add(CardType.Move);
             m_deck.Add(typeof(CardActionMove));
         for (var i = 0; i < m_cardLifeCount; ++i)
-            //m_deck.Add(CardType.Life);
             m_deck.Add(typeof(CardActionLife));
         /*
         for (var i = 0; i < m_cardStepCount; ++i)
             m_deck.Add(CardType.Step);
+            */
         for (var i = 0; i < m_cardDisasterCount; ++i) {
             //m_deck.Add(CardType.Fire);
-            m_deck.Add(CardType.Water);
+            m_deck.Add(typeof(CardActionWater));
             //m_deck.Add(CardType.Plague);
             //m_deck.Add(CardType.Spread);
         }
+        /*
         for (var i = 0; i < m_cardWildCount; ++i)
             m_deck.Add(CardType.Wild);
             */

@@ -1417,11 +1417,11 @@ MonoBehaviour:
   m_color: 2
   m_deckTextMesh: {fileID: 118704224}
   m_scoreTextMesh: {fileID: 1833204599}
-  m_cardMoveCount: 4
-  m_cardLifeCount: 4
+  m_cardMoveCount: 1
+  m_cardLifeCount: 1
   m_cardStepCount: 0
   m_cardWildCount: 0
-  m_cardDisasterCount: 0
+  m_cardDisasterCount: 8
 --- !u!224 &1421387994
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1630,11 +1630,11 @@ MonoBehaviour:
   m_color: 1
   m_deckTextMesh: {fileID: 497708580}
   m_scoreTextMesh: {fileID: 2147049678}
-  m_cardMoveCount: 4
-  m_cardLifeCount: 4
+  m_cardMoveCount: 1
+  m_cardLifeCount: 1
   m_cardStepCount: 0
   m_cardWildCount: 0
-  m_cardDisasterCount: 0
+  m_cardDisasterCount: 8
 --- !u!224 &1990231394
 RectTransform:
   m_ObjectHideFlags: 0

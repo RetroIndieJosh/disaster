@@ -11,13 +11,11 @@ public class BoardTile : GameElement
     [HideInInspector] public int y = -1;
 
     public bool IsClear => m_controller == null && m_disaster == null;
-    public PlayerColor StoneColor {
-        get {
-            if (m_controller == null || m_disaster != null)
-                return PlayerColor.None;
-            return m_controller.Color;
-        }
-    }
+    public bool IsControlledDisaster => m_controller != null && m_disaster != null;
+    public PlayerColor StoneColor 
+        => m_controller == null || m_disaster != null
+            ? PlayerColor.None
+            : m_controller.Color;
 
     public Disaster Disaster {
         get => m_disaster;
@@ -51,12 +49,15 @@ public class BoardTile : GameElement
             && Mathf.Abs(dy) <= a_distance;
     }
 
-    public bool IsAdjacentOrthogonalTo(BoardTile a_tile, int a_distance = 1) {
+    public bool IsAdjacentOrthogonalTo(BoardTile a_tile, int a_distance = 1, bool a_includeBetween = false) {
+        if (a_tile == this) return false;
         var dx = a_tile.x - x;
         var dy = a_tile.y - y;
-        return a_tile != this && (
-            (Mathf.Abs(dx) <= a_distance && Mathf.Abs(dy) == 0)
-            || (Mathf.Abs(dx) == 0 && Mathf.Abs(dy) <= a_distance));
+        return a_includeBetween
+            ? (Mathf.Abs(dx) <= a_distance && Mathf.Abs(dy) == 0)
+                || (Mathf.Abs(dx) == 0 && Mathf.Abs(dy) <= a_distance)
+            : (Mathf.Abs(dx) == a_distance && Mathf.Abs(dy) == 0)
+                || (Mathf.Abs(dx) == 0 && Mathf.Abs(dy) == a_distance);
     }
 
     public bool HasAdjacentOrthogonalStone(Player a_player) {

@@ -133,17 +133,6 @@ public class Card : GameElement
     }
 
     private void SetDisasterDirection(Player a_player, BoardTile a_endTile) {
-        var dir = Direction.None;
-        if (m_originTile.x > a_endTile.x)
-            dir = Direction.West;
-        else if (m_originTile.x < a_endTile.x)
-            dir = Direction.East;
-        else if (m_originTile.y > a_endTile.y)
-            dir = Direction.North;
-        else if (m_originTile.y < a_endTile.y)
-            dir = Direction.South;
-        Debug.Log($"Disaster dir: {dir}");
-        a_player.ActiveDisaster.Direction = dir;
     }
 
     private void Awake() {
@@ -168,41 +157,12 @@ public class Card : GameElement
     }
 
     private void UpdateColor() {
-        gameObject.SetActive(true);
+        gameObject.SetActive(m_action != null);
+        if (m_action == null)
+            return;
+
         var colors = m_button.colors;
         colors.normalColor = (m_action == null) ? Color.black : m_action.Color;
-        /*
-        switch (m_type) {
-        case CardType.Fire:
-            colors.normalColor = Color.red;
-            break;
-        case CardType.Life:
-            colors.normalColor = Color.green;
-            break;
-        case CardType.Move:
-            colors.normalColor = Color.white;
-            break;
-        case CardType.None:
-            gameObject.SetActive(false);
-            colors.normalColor = Color.black;
-            break;
-        case CardType.Plague:
-            colors.normalColor = Color.yellow;
-            break;
-        case CardType.Spread:
-            colors.normalColor = new Color(0.3f, 0.3f, 0.3f);
-            break;
-        case CardType.Step:
-            colors.normalColor = new Color(0.6f, 0.6f, 0.6f);
-            break;
-        case CardType.Water:
-            colors.normalColor = Color.blue;
-            break;
-        case CardType.Wild:
-            colors.normalColor = new Color(0.8f, 0.0f, 0.5f);
-            break;
-        }
-        */
         var r = colors.normalColor.r;
         var g = colors.normalColor.g;
         var b = colors.normalColor.b;
@@ -212,42 +172,12 @@ public class Card : GameElement
     }
 
     private void UpdateInfo() {
-        m_infoText = $"{Owner.name} Card: ";
-        switch (m_type) {
-        /*
-        case CardType.Fire:
-            m_infoText = "Fire";
-            break;
-        case CardType.Life:
-            m_infoText = "Fire";
-            break;
-        case CardType.Move:
-            m_infoText = "Fire";
-            break;
-        case CardType.None:
-            m_infoText = "Fire";
-            break;
-        case CardType.Plague:
-            m_infoText = "Fire";
-            break;
-        case CardType.Spread:
-            m_infoText = "Fire";
-            break;
-        case CardType.Step:
-            m_infoText = "Fire";
-            break;
-        case CardType.Water:
-            m_infoText = "Fire";
-            break;
-        case CardType.Wild:
-            m_infoText = "Fire";
-            break;
-            */
-        default:
-            if( m_action != null)
-                m_infoText += m_action.ToString();
-            break;
+        if (m_action == null) {
+            m_infoText = "";
+            return;
         }
+        m_infoText = $"{Owner.name} Card: ";
+        m_infoText += m_action.Info;
         if (m_button.interactable == false)
             m_infoText += "\n(unplayable)";
     }

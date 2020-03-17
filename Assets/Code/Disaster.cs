@@ -40,19 +40,20 @@ public class Disaster
         m_tileList.Add(m_startTile);
     }
 
-    public void Advance(Player a_owner) {
+    public void Advance() {
         // add one past the head in its facing direction
+        var controller = Head.Controller;
         Head.Controller = null;
         var next = Head.NextTile();
         if (next == null
             || (next.Disaster != null && next.Disaster.DisasterType == DisasterType.Water)) {
-            a_owner.ClearDisaster();
+            Head.Controller.ClearDisaster();
             return;
         }
         if (next.StoneColor != PlayerColor.None)
             next.Controller.Kill();
         next.Disaster = this;
-        next.Controller = a_owner;
+        next.Controller = controller;
         m_tileList.Add(next);
     }
 }
