@@ -19,7 +19,7 @@ public class CardActionDisaster: CardAction
 
     public override void Activate() {
         if (m_disaster == null) {
-            if (Owner.ActiveDisaster == null) {
+            if (Owner.ControlledDisaster == null) {
                 // select target disaster or placement
                 Board.instance.ToggleTiles((t) => {
                     return t.HasControlledDisaster || (t.HasAdjacentOrthogonalStone(Owner) && t.HasStone == false);
@@ -44,7 +44,7 @@ public class CardActionDisaster: CardAction
         if (m_disaster == null) {
             if (a_tile.Disaster == null) {
                 Owner.CreateDisaster(m_disasterType, a_tile);
-                m_disaster = Owner.ActiveDisaster;
+                m_disaster = Owner.ControlledDisaster;
                 m_stepsRemaining = 1;
             } else {
                 m_disaster = a_tile.Disaster;

@@ -1,5 +1,17 @@
 # Duality Jam
 
+Extend
+Fire
+Life
+Move
+Plague
+Spread
+Water
+
+# Design Questions
+
+- what happens if entire hand is unplayable? (spread/extend with no active disaster)
+
 ## Bugs
 
 ## Features

@@ -52,6 +52,7 @@ public class Board : MonoBehaviour
     public Player PlayerBlack => m_playerBlack;
     public Player PlayerWhite => m_playerWhite;
     public int PlayPerTurn => m_playPerTurn;
+    public bool HasControlledDisaster => PlayerBlack.HasControlledDisaster || PlayerWhite.HasControlledDisaster;
 
     public string InfoText {
         set {
@@ -204,8 +205,8 @@ public class Board : MonoBehaviour
     }
 
     public void NextTurn() {
-        if (m_autoAdvance && m_activePlayer.ActiveDisaster != null)
-            m_activePlayer.ActiveDisaster.Advance();
+        if (m_autoAdvance && m_activePlayer.ControlledDisaster != null)
+            m_activePlayer.ControlledDisaster.Advance();
         m_activePlayer = (m_activePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;
         Debug.Log($"{m_activePlayer}'s turn");
         m_activePlayer.StartTurn();

@@ -97,6 +97,7 @@ public class Card : GameElement
         if (m_action == null)
             return;
 
+        m_button.interactable = m_action.IsPlayable;
         var colors = m_button.colors;
         colors.normalColor = (m_action == null) ? Color.black : m_action.Color;
         var r = colors.normalColor.r;

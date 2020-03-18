@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class CardAction {
+    public string Info = "";
+
     public Color Color {
         get; protected set;
     } = Color.black;
-
-    public string Info = "";
 
     public Player Owner {
         protected get; set;
     } = null;
 
-    public bool IsPlayable {
-        get; protected set;
-    } = true;
+    public virtual bool IsPlayable => true;
 
     virtual public void Activate() { }
 

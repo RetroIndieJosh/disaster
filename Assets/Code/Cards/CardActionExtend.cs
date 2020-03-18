@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class CardActionAdvance: CardAction
 {
+
+    public override bool IsPlayable => Board.instance.HasControlledDisaster;
+
     private BoardTile m_target = null;
     private int m_moveSpeed = 1;
 

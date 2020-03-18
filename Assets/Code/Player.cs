@@ -28,7 +28,8 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("All disasters plus Spread")] private int m_cardDisasterCount = 4;
 
     public PlayerColor Color => m_color;
-    public Disaster ActiveDisaster => m_disaster;
+    public Disaster ControlledDisaster { get; private set; } = null;
+    public bool HasControlledDisaster => ControlledDisaster != null;
     public int Score {
         get => m_score;
         set {
@@ -39,7 +40,6 @@ public class Player : MonoBehaviour
 
     private int m_cardsPlayed = -1;
     private int m_deadCount = 0;
-    private Disaster m_disaster = null;
     private int m_score = 0;
     private Deck<System.Type> m_deck = new Deck<System.Type>();
     private Card[] m_handVisual = null;
@@ -54,19 +54,19 @@ public class Player : MonoBehaviour
     }
 
     public void ClearDisaster() {
-        m_disaster.Head.Controller = null;
-        m_disaster = null;
+        ControlledDisaster.Head.Controller = null;
+        ControlledDisaster = null;
     }
 
     public void CreateDisaster(DisasterType a_disasterType, BoardTile a_tile) {
-        if (m_disaster != null) {
+        if (ControlledDisaster != null) {
             Debug.LogError("Tried to create disaster illegally");
             return;
         }
         // TODO set direction
-        m_disaster = new Disaster(a_disasterType, a_tile);
+        ControlledDisaster = new Disaster(a_disasterType, a_tile);
         a_tile.Controller = this;
-        a_tile.Disaster = m_disaster;
+        a_tile.Disaster = ControlledDisaster;
     }
 
     public void Kill() {
