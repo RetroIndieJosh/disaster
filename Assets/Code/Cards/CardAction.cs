@@ -15,6 +15,7 @@ public abstract class CardAction {
 
     public virtual bool IsPlayable => true;
 
+    // should not change state (may be used to check possible choices)
     virtual public void Activate() { }
 
     virtual public bool Execute(BoardTile a_tile) {

@@ -30,11 +30,12 @@ public class CardActionAdvance: CardAction
     public override bool Execute(BoardTile a_tile) {
         if (m_target == null) {
             m_target = a_tile;
+            for (var i = 0; i < m_moveSpeed; ++i)
+                m_target.Disaster.Advance();
+            m_target = m_target.Disaster.Head;
             return false;
         }
-        for (var i = 0; i < m_moveSpeed; ++i) {
-            m_target.Disaster.Advance();
-        }
+        m_target.Disaster.SetDirection(m_target, a_tile);
         return true;
     }
 }
@@ -42,8 +43,8 @@ public class CardActionAdvance: CardAction
 public class CardActionExtend : CardActionAdvance
 {
     public CardActionExtend() : this(null) { }
-    public CardActionExtend(Player a_owner) : base(a_owner, 2) {
-        Color = new Color(0.6f, 0.6f, 0.6f);
+    public CardActionExtend(Player a_owner) : base(a_owner, 1) {
+        Color = new Color(0.3f, 0.3f, 0.3f);
         Info = "Disaster ~ Extend (1)";
     }
 }

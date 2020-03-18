@@ -75,6 +75,7 @@ public class Player : MonoBehaviour
 
     public void PlayedCard() {
         ++m_cardsPlayed;
+        UpdateHand();
         Board.instance.UpdateScore();
         if (m_cardsPlayed >= Board.instance.PlayPerTurn)
             EndTurn();
@@ -82,10 +83,20 @@ public class Player : MonoBehaviour
             CardsEnabled = true;
     }
 
+    private void UpdateHand() {
+        foreach (var card in m_handVisual) {
+            card.UpdateInfo();
+            card.UpdatePlayable();
+        }
+    }
+
     public void StartTurn() {
         CardsEnabled = true;
         DrawCards();
-        if (m_isHuman == false)
+        if( m_isHuman)
+            UpdateHand();
+        else
+            // TODO AI here
             EndTurn();
     }
 

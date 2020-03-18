@@ -32,7 +32,7 @@ public class Disaster
     private List<BoardTile> m_tileList = new List<BoardTile>();
 
     public DisasterType DisasterType { get; } = DisasterType.Fire;
-    public Direction Direction {
+    private Direction Direction {
         set => Head.Direction = value;
     }
 
@@ -45,6 +45,20 @@ public class Disaster
         if (DisasterType == DisasterType.Fire)
             StepAdvance();
         StepAdvance();
+    }
+
+    public void SetDirection(BoardTile a_from, BoardTile a_to) {
+        var dir = Direction.None;
+        if (a_from.x > a_to.x)
+            dir = Direction.West;
+        else if (a_from.x < a_to.x)
+            dir = Direction.East;
+        else if (a_from.y > a_to.y)
+            dir = Direction.North;
+        else if (a_from.y < a_to.y)
+            dir = Direction.South;
+        Debug.Log($"Disaster dir: {dir}");
+        Direction = dir;
     }
 
     private void StepAdvance() {

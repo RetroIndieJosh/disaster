@@ -52,7 +52,16 @@ public class Board : MonoBehaviour
     public Player PlayerBlack => m_playerBlack;
     public Player PlayerWhite => m_playerWhite;
     public int PlayPerTurn => m_playPerTurn;
+
     public bool HasControlledDisaster => PlayerBlack.HasControlledDisaster || PlayerWhite.HasControlledDisaster;
+    public bool HasClearSpace {
+        get {
+            foreach (var tile in m_tileMap)
+                if (tile.IsClear)
+                    return true;
+            return false;
+        }
+    }
 
     public string InfoText {
         set {
@@ -67,6 +76,7 @@ public class Board : MonoBehaviour
 
     private BoardTile[,] m_tileMap = null;
     private int m_tileSize = 0;
+    public int ActiveTileCount { get; private set; } = 0;
 
     public Card ActiveCard {
         private get => m_activeCard;
@@ -143,10 +153,13 @@ public class Board : MonoBehaviour
     private bool m_isGameOver = false;
 
     public void ToggleTiles(System.Func<BoardTile, bool> a_isInteractable) {
+        ActiveTileCount = 0;
         for (var y = 0; y < m_size; ++y) {
             for (var x = 0; x < m_size; ++x) {
                 var button = m_tileMap[x, y].GetComponent<Button>();
                 button.interactable = a_isInteractable(m_tileMap[x, y]);
+                if (button.interactable)
+                    ++ActiveTileCount;
             }
         }
     }

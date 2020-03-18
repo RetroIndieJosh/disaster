@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CardActionLife: CardAction
 {
+    public override bool IsPlayable => Board.instance.HasClearSpace;
+
     public CardActionLife() : this(null) { }
     public CardActionLife(Player a_owner) : base(a_owner) {
         Color = Color.green;

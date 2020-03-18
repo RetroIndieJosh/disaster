@@ -55,17 +55,7 @@ public class CardActionDisaster: CardAction
             }
             return false;
         }
-        var dir = Direction.None;
-        if (m_disaster.Head.x > a_tile.x)
-            dir = Direction.West;
-        else if (m_disaster.Head.x < a_tile.x)
-            dir = Direction.East;
-        else if (m_disaster.Head.y > a_tile.y)
-            dir = Direction.North;
-        else if (m_disaster.Head.y < a_tile.y)
-            dir = Direction.South;
-        Debug.Log($"Disaster dir: {dir}");
-        m_disaster.Direction = dir;
+        m_disaster.SetDirection(m_disaster.Head, a_tile);
 
         --m_stepsRemaining;
         if (m_stepsRemaining > 0) {

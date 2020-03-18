@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CardActionMove: CardAction
 {
+    public override bool IsPlayable => Board.instance.HasClearSpace;
+
     private BoardTile m_target = null;
 
     public CardActionMove() : this(null) { }

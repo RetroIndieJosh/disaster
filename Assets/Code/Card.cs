@@ -87,9 +87,19 @@ public class Card : GameElement
         });
     }
 
-    private void Update() {
-        if (Board.instance.ActivePlayer != Owner)
+    public void UpdatePlayable() {
+        if (m_action == null)
             return;
+        var isPlayable = m_action.IsPlayable;
+        if (isPlayable) {
+            Activate();
+            if (Board.instance.ActiveTileCount == 0)
+                isPlayable = false;
+            Board.instance.ResetTiles();
+            IsCardActive = false;
+        }
+
+        m_button.interactable = isPlayable;
     }
 
     private void UpdateColor() {
@@ -109,14 +119,13 @@ public class Card : GameElement
         m_button.colors = colors;
     }
 
-    private void UpdateInfo() {
-        if (m_action == null) {
-            m_infoText = "";
+    public void UpdateInfo() {
+        m_infoText = "";
+        if (m_action == null)
             return;
-        }
-        m_infoText = $"{Owner.name} Card: ";
+        //m_infoText = $"Owner: {Owner.name}\n";
         m_infoText += m_action.Info;
-        if (m_button.interactable == false)
+        if (m_action.IsPlayable == false)
             m_infoText += "\n(unplayable)";
     }
 }

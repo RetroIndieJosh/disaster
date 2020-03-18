@@ -14,13 +14,15 @@ Water
 
 ## Bugs
 
+- after extending/spreading to a stop point, shouldn't ask for direction (ret true)
+- disallow moving trapped piece
+
 ## Features
 
 - IsPlayable implementation
-        - Board.HasControlledDisaster
-        - Board.HasClearSpace
         - Board.HasStone(color)
                 - also for elimination game over
+- text labels on cards
 - disallow water turning back on itself
 - quelch fire if touching fire on two sides
 - skip first turn auto advance?
