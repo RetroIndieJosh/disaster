@@ -48,8 +48,9 @@ public class Player : MonoBehaviour
         set {
             if (m_isHuman == false)
                 return;
-            foreach (var card in m_handVisual)
-                card.GetComponent<Button>().interactable = value;
+            foreach (var card in m_handVisual) {
+                card.UpdatePlayable(value);
+            }
         }
     }
 
@@ -84,16 +85,14 @@ public class Player : MonoBehaviour
     }
 
     private void UpdateHand() {
-        foreach (var card in m_handVisual) {
+        foreach (var card in m_handVisual)
             card.UpdateInfo();
-            card.UpdatePlayable();
-        }
     }
 
     public void StartTurn() {
         CardsEnabled = true;
         DrawCards();
-        if( m_isHuman)
+        if (m_isHuman)
             UpdateHand();
         else
             // TODO AI here

@@ -198,7 +198,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7ae533d75a2b8d438668b783cce4b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_image: {fileID: 48180264}
   m_overlayImage: {fileID: 1584838481}
+  x: -1
+  y: -1
 --- !u!114 &8633574164378416055
 MonoBehaviour:
   m_ObjectHideFlags: 0

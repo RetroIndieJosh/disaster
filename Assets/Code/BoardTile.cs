@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class BoardTile : GameElement
 {
+    [SerializeField] private Image m_image = null;
     [SerializeField] private Image m_overlayImage = null;
 
     [HideInInspector] public int x = -1;
@@ -36,6 +37,8 @@ public class BoardTile : GameElement
             m_controller = value;
             UpdateInfo();
             UpdateOverlay();
+            if(m_controller != null)
+                StartCoroutine(FlashOverlay());
         }
     }
 
@@ -47,6 +50,27 @@ public class BoardTile : GameElement
         m_disaster = null;
         UpdateInfo();
         UpdateOverlay();
+    }
+
+    public IEnumerator FlashOverlay() {
+        var totalTimeElapsed = 0f;
+        var timeElapsed = 0f;
+        var totalTime = 1f;
+        var flashes = 5;
+        var flipTime = totalTime / flashes;
+        var visible = false;
+        var originalColor = m_overlayImage.color;
+        while (totalTimeElapsed < totalTime) {
+            m_overlayImage.color = visible ? originalColor : Color.clear;
+            timeElapsed += Time.deltaTime;
+            if (timeElapsed > flipTime) {
+                visible = !visible;
+                timeElapsed = 0f;
+            }
+            totalTimeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        m_overlayImage.color = originalColor;
     }
 
     public bool IsAdjacentDiagonalTo(BoardTile a_tile, int a_distance = 1) {
@@ -103,6 +127,10 @@ public class BoardTile : GameElement
         button.onClick.AddListener(() => {
             Board.instance.ActivateCard(this);
         });
+
+        var sd = GetComponent<RectTransform>().sizeDelta;
+        m_image.GetComponent<RectTransform>().sizeDelta = Board.instance.TileSize * Vector2.one;
+        m_overlayImage.GetComponent<RectTransform>().sizeDelta = Board.instance.TileSize * Vector2.one;
     }
 
     private void SetOverlay(Sprite a_sprite) {

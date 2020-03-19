@@ -14,11 +14,17 @@ public class Board : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_infoTextMesh = null;
 
     [Header("Game Design")]
+    [SerializeField] private int m_boardSizeTiles = 6;
+    [SerializeField] private int m_boardSizePixels = 600;
     [SerializeField] private int m_handSize = 5;
     [SerializeField] private int m_playPerTurn = 2;
     [SerializeField] private bool m_autoAdvance = false;
     [SerializeField] private bool m_extendAlsoTurns = false;
     [SerializeField] private bool m_spreadAlsoTurns = false;
+
+    [Header("Board Setup")]
+    [SerializeField] private List<Vector2Int> m_initialStonesBlack = new List<Vector2Int>();
+    [SerializeField] private List<Vector2Int> m_initialStonesWhite = new List<Vector2Int>();
     
     [Header("Sprites")]
     [SerializeField] private Sprite m_spriteStoneBlack = null;
@@ -43,17 +49,13 @@ public class Board : MonoBehaviour
     [SerializeField] private Card m_cardPrefab = null;
     [SerializeField] private BoardTile m_tilePrefab = null;
 
-    [Header("Board Setup")]
-    [SerializeField] private int m_size = 6;
-    [SerializeField] private List<Vector2Int> m_initialStonesBlack = new List<Vector2Int>();
-    [SerializeField] private List<Vector2Int> m_initialStonesWhite = new List<Vector2Int>();
-
     public bool ExtendAlsoTurns => m_extendAlsoTurns;
     public bool SpreadAlsoTurns => m_spreadAlsoTurns;
 
+    public float TileSize => (float)m_boardSizePixels / m_boardSizeTiles;
     public Card CardPrefab => m_cardPrefab;
     public int HandSize => m_handSize;
-    public Player ActivePlayer => m_activePlayer;
+    public Player ActivePlayer { get; private set; } = null;
     public Player PlayerBlack => m_playerBlack;
     public Player PlayerWhite => m_playerWhite;
     public int PlayPerTurn => m_playPerTurn;
@@ -76,7 +78,6 @@ public class Board : MonoBehaviour
         }
     }
 
-    private Player m_activePlayer = null;
     private Card m_activeCard = null;
 
     private BoardTile[,] m_tileMap = null;
@@ -174,6 +175,15 @@ public class Board : MonoBehaviour
         return false;
     }
 
+    public void EnableInput() {
+        ActivePlayer.CardsEnabled = true;
+    }
+
+    public void DisableInput() {
+        PlayerBlack.CardsEnabled = false;
+        PlayerWhite.CardsEnabled = false;
+    }
+
     public void EndGame() {
         var winner = "Tie";
         if (m_playerBlack.Score > m_playerWhite.Score)
@@ -181,8 +191,6 @@ public class Board : MonoBehaviour
         else if (m_playerWhite.Score > m_playerBlack.Score)
             winner = "White";
         InfoText = $"Game over! Winner: {winner}";
-        PlayerBlack.CardsEnabled = false;
-        PlayerWhite.CardsEnabled = false;
         m_isGameOver = true;
     }
 
@@ -190,8 +198,8 @@ public class Board : MonoBehaviour
 
     public void ToggleTiles(System.Func<BoardTile, bool> a_isInteractable) {
         ActiveTileCount = 0;
-        for (var y = 0; y < m_size; ++y) {
-            for (var x = 0; x < m_size; ++x) {
+        for (var y = 0; y < m_boardSizeTiles; ++y) {
+            for (var x = 0; x < m_boardSizeTiles; ++x) {
                 var button = m_tileMap[x, y].GetComponent<Button>();
                 button.interactable = a_isInteractable(m_tileMap[x, y]);
                 if (button.interactable)
@@ -248,18 +256,18 @@ public class Board : MonoBehaviour
     }
 
     public BoardTile GetTile(int a_tileX, int a_tileY) {
-        return (a_tileX < 0 || a_tileY < 0 || a_tileX >= m_size || a_tileY >= m_size) 
+        return (a_tileX < 0 || a_tileY < 0 || a_tileX >= m_boardSizeTiles || a_tileY >= m_boardSizeTiles) 
             ? null : m_tileMap[a_tileX, a_tileY];
     }
 
     public void NextTurn() {
-        if (m_autoAdvance && m_activePlayer.ControlledDisaster != null)
-            m_activePlayer.ControlledDisaster.Advance();
-        m_activePlayer = (m_activePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;
-        Debug.Log($"{m_activePlayer}'s turn");
+        if (m_autoAdvance && ActivePlayer.ControlledDisaster != null)
+            ActivePlayer.ControlledDisaster.Advance();
+        ActivePlayer = (ActivePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;
+        Debug.Log($"{ActivePlayer}'s turn");
         UpdateScore();
         if(m_isGameOver == false)
-            m_activePlayer.StartTurn();
+            ActivePlayer.StartTurn();
     }
 
     public void UpdateScore() {
@@ -275,7 +283,7 @@ public class Board : MonoBehaviour
         m_playerBlack.Score = blackScore;
         m_playerWhite.Score = whiteScore;
 
-        if (blackScore == 0 || whiteScore == 0)
+        if (blackScore == 0 || whiteScore == 0 || HasClearSpace == false)
             EndGame();
     }
 
@@ -292,33 +300,33 @@ public class Board : MonoBehaviour
     }
 
     private void Start() {
-        m_tileMap = new BoardTile[m_size, m_size];
+        m_tileMap = new BoardTile[m_boardSizeTiles, m_boardSizeTiles];
         CreateTileButtons();
         PlaceInitialStones();
         UpdateScore();
 
-        m_activePlayer = m_playerBlack;
-        m_activePlayer.StartTurn();
+        ActivePlayer = m_playerBlack;
+        ActivePlayer.StartTurn();
     }
 
     private bool TileMatch(int a_x, int a_y, PlayerColor a_color) {
-        return a_x >= 0 && a_y >= 0 && a_x < m_size && a_y < m_size && m_tileMap[a_x, a_y].StoneColor == a_color;
+        return a_x >= 0 && a_y >= 0 && a_x < m_boardSizeTiles && a_y < m_boardSizeTiles && m_tileMap[a_x, a_y].StoneColor == a_color;
     }
 
     private void CreateTileButtons() {
         var pos = Vector2Int.zero;
-        for (var y = 0; y < m_size; ++y) {
-            for (var x = 0; x < m_size; ++x) {
+        for (var y = 0; y < m_boardSizeTiles; ++y) {
+            for (var x = 0; x < m_boardSizeTiles; ++x) {
                 m_tileMap[x, y] = Instantiate(m_tilePrefab, transform);
                 m_tileMap[x, y].name = $"Board Tile {x} {y}";
                 m_tileMap[x, y].x = x;
                 m_tileMap[x, y].y = y;
                 var rectTransform = m_tileMap[x, y].GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = pos;
-                pos.x += m_tileSize;
+                pos.x += Mathf.FloorToInt(TileSize);
             }
             pos.x = 0;
-            pos.y -= m_tileSize;
+            pos.y -= Mathf.FloorToInt(TileSize);
         }
     }
 

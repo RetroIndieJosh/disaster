@@ -89,10 +89,10 @@ public class Card : GameElement
         });
     }
 
-    public void UpdatePlayable() {
+    public void UpdatePlayable(bool m_playable) {
         if (m_action == null)
             return;
-        var isPlayable = m_action.IsPlayable;
+        var isPlayable = m_playable && m_action.IsPlayable;
         if (isPlayable) {
             Activate();
             if (Board.instance.ActiveTileCount == 0)

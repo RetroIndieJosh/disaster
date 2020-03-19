@@ -23,9 +23,13 @@ Wild (?) - purple
 
 ## Bugs
 
-- after extending/spreading to a stop point, shouldn't ask for direction (ret true)
-        - does this even happen anymore? need water on water to test?
-- extend says it's unplayable after disaster ends but it's still playable
+- possible Heisenbug: after extending/spreading to a stop point, sometimes asks
+  for direction (very rare scenario)
+- extend says it's unplayable after disaster ends but can still play it
+- cannot select facing for edge disaster tiles because they disable themselves
+        - maybe this is a mechanic and the outside is "dead zone"
+        - should have some visual for the dead zone
+- setting fire direction may be impossible in some scenarios leading to a softlock
 
 ## Features
 
@@ -33,11 +37,14 @@ Wild (?) - purple
 
 - delay end of turn to show auto advance isn't part of last played card
         - maybe a general timer on each advancement taken?
+        - disable inputs on a timer based on time for blinking
+        - wait for timers to finish before doing mid turn advancement (both disabled)
 - don't auto-advance on placement turn
-- disable change of disaster if trail < 3
+- allow change of disaster if trail >= 3
 - quelch fire if touching fire on two sides
 - disallow water/fire turning back on itself
 - wild card: select which card to copy, use that logic
+- resume matching disaster from any disaster tile
 
 ### Wishlist
 
