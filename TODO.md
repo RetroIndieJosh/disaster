@@ -24,8 +24,8 @@ Wild (?) - purple
 ## Bugs
 
 - after extending/spreading to a stop point, shouldn't ask for direction (ret true)
-- disallow moving trapped piece
 - remove duplicates from initial stones
+- extend says it's unplayable after disaster ends but it's still playable
 
 ## Features
 
@@ -34,9 +34,6 @@ Wild (?) - purple
 - IsPlayable implementation
         - Board.HasStone(color)
                 - also for elimination game over
-- remove pieces from disasters that are >3 away from head
-- auto advance (skip placement turn?)
-        - choose new facing on auto advancement?
 
 ### Important
 
@@ -44,8 +41,6 @@ Wild (?) - purple
 - quelch fire if touching fire on two sides
 - disallow water/fire turning back on itself
 - wild card: select which card to copy, use that logic
-- currently can't turn with extend/spread, is this good?
-        - can only turn with disaster card
 
 ### Wishlist
 

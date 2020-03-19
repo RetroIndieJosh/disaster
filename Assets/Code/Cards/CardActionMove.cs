@@ -18,7 +18,7 @@ public class CardActionMove: CardAction
     public override void Activate() {
         if (m_target == null) {
             Board.instance.ToggleTiles((t) => {
-                return t.StoneColor == Owner.Color;
+                return t.StoneColor == Owner.Color && t.HasAdjacentClearSpace;
             });
             return;
         }

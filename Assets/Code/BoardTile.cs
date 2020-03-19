@@ -18,6 +18,9 @@ public class BoardTile : GameElement
             ? PlayerColor.None
             : m_controller.Color;
 
+    // TODO account for adjacent disasters (block but still controlled by none)
+    public bool HasAdjacentClearSpace => Board.instance.HasNeighborOrthogonal(x, y, PlayerColor.None);
+
     public Disaster Disaster {
         get => m_disaster;
         set {
@@ -65,7 +68,7 @@ public class BoardTile : GameElement
     }
 
     public bool HasAdjacentOrthogonalStone(Player a_player) {
-        return Board.instance.CheckNeighborsOrthogonal(x, y, a_player.Color) && IsClear;
+        return Board.instance.HasNeighborOrthogonal(x, y, a_player.Color) && IsClear;
     }
 
     private Direction m_direction = Direction.None;

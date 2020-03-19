@@ -17,6 +17,8 @@ public class Board : MonoBehaviour
     [SerializeField] private int m_handSize = 5;
     [SerializeField] private int m_playPerTurn = 2;
     [SerializeField] private bool m_autoAdvance = false;
+    [SerializeField] private bool m_extendAlsoTurns = false;
+    [SerializeField] private bool m_spreadAlsoTurns = false;
     
     [Header("Sprites")]
     [SerializeField] private Sprite m_spriteStoneBlack = null;
@@ -45,6 +47,9 @@ public class Board : MonoBehaviour
     [SerializeField] private int m_size = 6;
     [SerializeField] private List<Vector2Int> m_initialStonesBlack = new List<Vector2Int>();
     [SerializeField] private List<Vector2Int> m_initialStonesWhite = new List<Vector2Int>();
+
+    public bool ExtendAlsoTurns => m_extendAlsoTurns;
+    public bool SpreadAlsoTurns => m_spreadAlsoTurns;
 
     public Card CardPrefab => m_cardPrefab;
     public int HandSize => m_handSize;
@@ -102,12 +107,8 @@ public class Board : MonoBehaviour
         ActiveCard.Play(a_tile);
     }
 
-    public bool CheckNeighborsBoth(int a_x, int a_y, PlayerColor a_color, int a_distance) {
-        return CheckNeighborsOrthogonal(a_x, a_y, a_color, a_distance)
-            || CheckNeighborsDiagonal(a_x, a_y, a_color, a_distance);
-    }
-
-    public bool CheckNeighborsDiagonal(int a_x, int a_y, PlayerColor a_color, int a_distance = 1) {
+    public List<BoardTile> GetNeighborsDiagonal(int a_x, int a_y, int a_distance = 1) {
+        var tileList = new List<BoardTile>();
         var stepList = new List<int>();
         for (var i = 1; i <= a_distance; ++i) {
             stepList.Add(i);
@@ -115,25 +116,59 @@ public class Board : MonoBehaviour
         }
         foreach (var oy in stepList) {
             foreach (var ox in stepList) {
-                if (TileMatch(a_x + ox, a_y + oy, a_color))
-                    return true;
+                var tile = GetTile(a_x + ox, a_y + oy);
+                if (tile == null)
+                    continue;
+                tileList.Add(tile);
             }
         }
-        return false;
+        return tileList;
     }
 
-    public bool CheckNeighborsOrthogonal(int a_x, int a_y, PlayerColor a_color, int a_distance = 1) {
+    public List<BoardTile> GetNeighborsOrthogonal(int a_x, int a_y, int a_distance = 1) {
+        var tileList = new List<BoardTile>();
         var stepList = new List<int>();
         for (var i = 1; i <= a_distance; ++i) {
             stepList.Add(i);
             stepList.Add(-i);
         }
         foreach (var ox in stepList) {
-            if (TileMatch(a_x + ox, a_y, a_color))
-                return true;
+            var tile = GetTile(a_x + ox, a_y);
+            if (tile == null)
+                continue;
+            tileList.Add(tile);
         }
         foreach (var oy in stepList) {
-            if (TileMatch(a_x, a_y + oy, a_color))
+            var tile = GetTile(a_x, a_y + oy);
+            if (tile == null)
+                continue;
+            tileList.Add(tile);
+        }
+        return tileList;
+    }
+
+    public bool HasNeighborBoth(int a_x, int a_y, PlayerColor a_color, int a_distance=1) {
+        return HasNeighborOrthogonal(a_x, a_y, a_color, a_distance)
+            || HasNeighborDiagonal(a_x, a_y, a_color, a_distance);
+    }
+
+    public bool HasNeighborDiagonal(int a_x, int a_y, PlayerColor a_color, int a_distance = 1) {
+        var list = GetNeighborsDiagonal(a_x, a_y, a_distance);
+        if (list == null)
+            return false;
+        foreach (var tile in list) {
+            if (TileMatch(tile.x, tile.y, a_color))
+                return true;
+        }
+        return false;
+    }
+
+    public bool HasNeighborOrthogonal(int a_x, int a_y, PlayerColor a_color, int a_distance = 1) {
+        var list = GetNeighborsDiagonal(a_x, a_y, a_distance);
+        if (list == null)
+            return false;
+        foreach (var tile in list) {
+            if (TileMatch(tile.x, tile.y, a_color))
                 return true;
         }
         return false;
@@ -212,9 +247,8 @@ public class Board : MonoBehaviour
     }
 
     public BoardTile GetTile(int a_tileX, int a_tileY) {
-        if (a_tileX < 0 || a_tileY < 0 || a_tileX >= m_size || a_tileY >= m_size)
-            return null;
-        return m_tileMap[a_tileX, a_tileY];
+        return (a_tileX < 0 || a_tileY < 0 || a_tileX >= m_size || a_tileY >= m_size) 
+            ? null : m_tileMap[a_tileX, a_tileY];
     }
 
     public void NextTurn() {
