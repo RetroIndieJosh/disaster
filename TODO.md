@@ -30,15 +30,12 @@ Wild (?) - purple
         - maybe this is a mechanic and the outside is "dead zone"
         - should have some visual for the dead zone
 - setting fire direction may be impossible in some scenarios leading to a softlock
+- going to next turn (advance phase) activates cards for both players
 
 ## Features
 
 ### Important
 
-- delay end of turn to show auto advance isn't part of last played card
-        - maybe a general timer on each advancement taken?
-        - disable inputs on a timer based on time for blinking
-        - wait for timers to finish before doing mid turn advancement (both disabled)
 - don't auto-advance on placement turn
 - allow change of disaster if trail >= 3
 - quelch fire if touching fire on two sides

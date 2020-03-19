@@ -110,14 +110,11 @@ public class Card : GameElement
             return;
 
         m_button.interactable = m_action.IsPlayable;
+        var color = (m_action == null) ? Color.black : m_action.Color;
         var colors = m_button.colors;
-        colors.highlightedColor = (m_action == null) ? Color.black : m_action.Color;
-        m_labelTextMesh.color = colors.highlightedColor;
-        var r = colors.normalColor.r;
-        var g = colors.normalColor.g;
-        var b = colors.normalColor.b;
-        var mult = 0.8f;
-        colors.selectedColor = new Color(r * mult, g * mult, b * mult);
+        colors.highlightedColor = color;
+        m_labelTextMesh.color = color;
+        colors.selectedColor = color;
         m_button.colors = colors;
     }
 

@@ -12,9 +12,9 @@ public class BoardTile : GameElement
     [HideInInspector] public int y = -1;
 
     public bool IsClear => m_controller == null && m_disaster == null;
-    public bool HasStone => m_controller != null && m_disaster == null; 
+    public bool HasStone => m_controller != null && m_disaster == null;
     public bool HasControlledDisaster => m_controller != null && m_disaster != null;
-    public PlayerColor StoneColor 
+    public PlayerColor StoneColor
         => m_controller == null || m_disaster != null
             ? PlayerColor.None
             : m_controller.Color;
@@ -37,10 +37,19 @@ public class BoardTile : GameElement
             m_controller = value;
             UpdateInfo();
             UpdateOverlay();
-            if(m_controller != null)
-                StartCoroutine(FlashOverlay());
+            IsBlinking = true;
         }
     }
+
+    public bool IsBlinking {
+        get => m_isBlinking;
+        set {
+            m_blinkTimer = 0f;
+            m_isBlinking = value;
+        }
+    }
+
+    private bool m_isBlinking = false;
 
     private Player m_controller = null;
     private Disaster m_disaster = null;
@@ -50,27 +59,6 @@ public class BoardTile : GameElement
         m_disaster = null;
         UpdateInfo();
         UpdateOverlay();
-    }
-
-    public IEnumerator FlashOverlay() {
-        var totalTimeElapsed = 0f;
-        var timeElapsed = 0f;
-        var totalTime = 1f;
-        var flashes = 5;
-        var flipTime = totalTime / flashes;
-        var visible = false;
-        var originalColor = m_overlayImage.color;
-        while (totalTimeElapsed < totalTime) {
-            m_overlayImage.color = visible ? originalColor : Color.clear;
-            timeElapsed += Time.deltaTime;
-            if (timeElapsed > flipTime) {
-                visible = !visible;
-                timeElapsed = 0f;
-            }
-            totalTimeElapsed += Time.deltaTime;
-            yield return null;
-        }
-        m_overlayImage.color = originalColor;
     }
 
     public bool IsAdjacentDiagonalTo(BoardTile a_tile, int a_distance = 1) {
@@ -131,6 +119,32 @@ public class BoardTile : GameElement
         var sd = GetComponent<RectTransform>().sizeDelta;
         m_image.GetComponent<RectTransform>().sizeDelta = Board.instance.TileSize * Vector2.one;
         m_overlayImage.GetComponent<RectTransform>().sizeDelta = Board.instance.TileSize * Vector2.one;
+
+        m_originalOverlayColor = m_overlayImage.color;
+    }
+
+    private float m_blinkTimer = 0f;
+    private float m_blinkTimerTotal = 0f;
+    private bool m_isOverlayVisible = true;
+    private Color m_originalOverlayColor = Color.white;
+
+    private void Update() {
+        if (IsBlinking == false) {
+            m_overlayImage.color = m_originalOverlayColor;
+            return;
+        }
+
+        m_overlayImage.color = m_isOverlayVisible ? m_originalOverlayColor : Color.clear;
+        m_blinkTimerTotal += Time.deltaTime;
+        if (m_blinkTimerTotal > Board.instance.BlinkTimeTotal) {
+            IsBlinking = false;
+            return;
+        }
+        m_blinkTimer += Time.deltaTime;
+        if (m_blinkTimer > Board.instance.BlinkFlipTime) {
+            m_isOverlayVisible = !m_isOverlayVisible;
+            m_blinkTimer = 0f;
+        }
     }
 
     private void SetOverlay(Sprite a_sprite) {

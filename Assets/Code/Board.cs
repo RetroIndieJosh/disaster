@@ -25,6 +25,12 @@ public class Board : MonoBehaviour
     [Header("Board Setup")]
     [SerializeField] private List<Vector2Int> m_initialStonesBlack = new List<Vector2Int>();
     [SerializeField] private List<Vector2Int> m_initialStonesWhite = new List<Vector2Int>();
+
+    [Header("Visuals")]
+    [SerializeField] private float m_timeAllBlinks = 1f;
+    [SerializeField] private float m_blinkCount = 5;
+    public float BlinkTimeTotal => m_timeAllBlinks;
+    public float BlinkFlipTime => BlinkTimeTotal / (m_blinkCount * 2f);
     
     [Header("Sprites")]
     [SerializeField] private Sprite m_spriteStoneBlack = null;
@@ -60,6 +66,14 @@ public class Board : MonoBehaviour
     public Player PlayerWhite => m_playerWhite;
     public int PlayPerTurn => m_playPerTurn;
 
+    public bool AnyBlinking {
+        get {
+            foreach (var tile in m_tileMap)
+                if (tile.IsBlinking)
+                    return true;
+            return false;
+        }
+    }
     public bool HasControlledDisaster => PlayerBlack.HasControlledDisaster || PlayerWhite.HasControlledDisaster;
     public bool HasClearSpace {
         get {
@@ -176,6 +190,7 @@ public class Board : MonoBehaviour
     }
 
     public void EnableInput() {
+        DisableInput();
         ActivePlayer.CardsEnabled = true;
     }
 
@@ -261,13 +276,31 @@ public class Board : MonoBehaviour
     }
 
     public void NextTurn() {
+        if (AnyBlinking) {
+            StartCoroutine(WaitForBlinkToEnd(StartNextTurn));
+            return;
+        }
+        StartNextTurn();
+    }
+
+    private void StartNextTurn() {
         if (m_autoAdvance && ActivePlayer.ControlledDisaster != null)
             ActivePlayer.ControlledDisaster.Advance();
         ActivePlayer = (ActivePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;
         Debug.Log($"{ActivePlayer}'s turn");
         UpdateScore();
+        EnableInput();
         if(m_isGameOver == false)
             ActivePlayer.StartTurn();
+    }
+
+    public IEnumerator WaitForBlinkToEnd(UnityAction a_onEnd = null) {
+        DisableInput();
+        while (AnyBlinking)
+            yield return null;
+        EnableInput();
+        if (a_onEnd != null)
+            a_onEnd.Invoke();
     }
 
     public void UpdateScore() {
@@ -287,7 +320,6 @@ public class Board : MonoBehaviour
             EndGame();
     }
 
-
     private void Awake() {
         if (instance != null) {
             Destroy(gameObject);
@@ -302,11 +334,12 @@ public class Board : MonoBehaviour
     private void Start() {
         m_tileMap = new BoardTile[m_boardSizeTiles, m_boardSizeTiles];
         CreateTileButtons();
-        PlaceInitialStones();
-        UpdateScore();
 
         ActivePlayer = m_playerBlack;
         ActivePlayer.StartTurn();
+
+        PlaceInitialStones();
+        UpdateScore();
     }
 
     private bool TileMatch(int a_x, int a_y, PlayerColor a_color) {
@@ -335,6 +368,7 @@ public class Board : MonoBehaviour
             m_tileMap[coord.x, coord.y].Controller = m_playerBlack;
         foreach (var coord in m_initialStonesWhite)
             m_tileMap[coord.x, coord.y].Controller = m_playerWhite;
+        StartCoroutine(WaitForBlinkToEnd());
     }
 
 }

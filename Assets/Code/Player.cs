@@ -48,9 +48,8 @@ public class Player : MonoBehaviour
         set {
             if (m_isHuman == false)
                 return;
-            foreach (var card in m_handVisual) {
+            foreach (var card in m_handVisual)
                 card.UpdatePlayable(value);
-            }
         }
     }
 
@@ -78,10 +77,11 @@ public class Player : MonoBehaviour
         ++m_cardsPlayed;
         UpdateHand();
         Board.instance.UpdateScore();
-        if (m_cardsPlayed >= Board.instance.PlayPerTurn)
+        if (m_cardsPlayed >= Board.instance.PlayPerTurn) {
             EndTurn();
-        else
-            CardsEnabled = true;
+            return;
+        }
+        StartCoroutine(Board.instance.WaitForBlinkToEnd());
     }
 
     private void UpdateHand() {
@@ -90,7 +90,6 @@ public class Player : MonoBehaviour
     }
 
     public void StartTurn() {
-        CardsEnabled = true;
         DrawCards();
         if (m_isHuman)
             UpdateHand();
@@ -130,7 +129,6 @@ public class Player : MonoBehaviour
     }
 
     public void EndTurn() {
-        CardsEnabled = false;
         Board.instance.NextTurn();
     }
 
