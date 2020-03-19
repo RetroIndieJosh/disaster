@@ -23,7 +23,7 @@ public class CardActionMove: CardAction
             return;
         }
         Board.instance.ToggleTiles((t) => {
-            return t.IsAdjacentOrthogonalTo(m_target) && t.IsClear;
+            return t.IsAdjacentOrthogonalTo(m_target) && t.IsClear && t.IsEdge == false;
         });
     }
 

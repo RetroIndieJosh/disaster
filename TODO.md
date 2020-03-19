@@ -26,16 +26,13 @@ Wild (?) - purple
 - possible Heisenbug: after extending/spreading to a stop point, sometimes asks
   for direction (very rare scenario)
 - extend says it's unplayable after disaster ends but can still play it
-- cannot select facing for edge disaster tiles because they disable themselves
-        - maybe this is a mechanic and the outside is "dead zone"
-        - should have some visual for the dead zone
 - setting fire direction may be impossible in some scenarios leading to a softlock
-- going to next turn (advance phase) activates cards for both players
 
 ## Features
 
 ### Important
 
+- visual for the deadzone (outside tiles)
 - don't auto-advance on placement turn
 - allow change of disaster if trail >= 3
 - quelch fire if touching fire on two sides

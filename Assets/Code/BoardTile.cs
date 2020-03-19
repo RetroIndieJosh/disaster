@@ -12,12 +12,17 @@ public class BoardTile : GameElement
     [HideInInspector] public int y = -1;
 
     public bool IsClear => m_controller == null && m_disaster == null;
+    public bool IsEdge => Board.instance.IsEdge(x, y);
     public bool HasStone => m_controller != null && m_disaster == null;
     public bool HasControlledDisaster => m_controller != null && m_disaster != null;
     public PlayerColor StoneColor
         => m_controller == null || m_disaster != null
             ? PlayerColor.None
             : m_controller.Color;
+    public Color TileColor {
+        get => m_image.color;
+        set => m_image.color = value;
+    }
 
     // TODO account for adjacent disasters (block but still controlled by none)
     public bool HasAdjacentClearSpace => Board.instance.HasNeighborOrthogonal(x, y, PlayerColor.None);

@@ -15,7 +15,7 @@ public class CardActionLife: CardAction
 
     public override void Activate() {
         Board.instance.ToggleTiles((t) => {
-            return t.HasAdjacentOrthogonalStone(Owner) && t.IsClear;
+            return t.HasAdjacentOrthogonalStone(Owner) && t.IsClear && t.IsEdge == false;
         });
     }
 

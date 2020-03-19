@@ -162,6 +162,10 @@ public class Board : MonoBehaviour
         return tileList;
     }
 
+    public bool IsEdge(int a_x, int a_y) {
+        return a_x == 0 || a_y == 0 || a_x == m_boardSizeTiles - 1 || a_y == m_boardSizeTiles - 1;
+    }
+
     public bool HasNeighborBoth(int a_x, int a_y, PlayerColor a_color, int a_distance=1) {
         return HasNeighborOrthogonal(a_x, a_y, a_color, a_distance)
             || HasNeighborDiagonal(a_x, a_y, a_color, a_distance);
@@ -357,6 +361,13 @@ public class Board : MonoBehaviour
                 var rectTransform = m_tileMap[x, y].GetComponent<RectTransform>();
                 rectTransform.anchoredPosition = pos;
                 pos.x += Mathf.FloorToInt(TileSize);
+                if (IsEdge(x, y) == false) {
+                    var color = m_tileMap[x, y].TileColor;
+                    color.r *= 0.9f;
+                    color.g *= 0.9f;
+                    color.b *= 0.9f;
+                    m_tileMap[x, y].TileColor = color;
+                }
             }
             pos.x = 0;
             pos.y -= Mathf.FloorToInt(TileSize);
