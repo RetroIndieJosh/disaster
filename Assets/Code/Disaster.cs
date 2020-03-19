@@ -27,9 +27,14 @@ public class Disaster
     public bool IsAlive => Head.HasControlledDisaster;
     public int Length => m_tileList.Count;
     public BoardTile Head => m_tileList[m_tileList.Count - 1];
-    private BoardTile Tail => m_tileList[0];
+    private BoardTile Tail {
+        get => m_tileList[m_tailIndex];
+        set => m_tileList[m_tailIndex] = value;
+    }
 
     private List<BoardTile> m_tileList = new List<BoardTile>();
+
+    private int m_tailIndex = 0;
 
     public DisasterType DisasterType { get; } = DisasterType.Fire;
     private Direction Direction {
@@ -39,6 +44,7 @@ public class Disaster
     public Disaster(DisasterType a_type, BoardTile m_startTile) {
         DisasterType = a_type;
         m_tileList.Add(m_startTile);
+        m_tailIndex = 0;
     }
 
     public void Advance() {
@@ -91,6 +97,14 @@ public class Disaster
         next.Controller = controller;
         next.Direction = Head.Direction;
         m_tileList.Add(next);
+
+        // clear tail if too far
+        var tailLength = DisasterType == DisasterType.Fire ? 6 : 3;
+        while (m_tileList.Count - m_tailIndex > tailLength) {
+            Tail.Clear();
+            Tail = null;
+            ++m_tailIndex;
+        }
     }
 }
 
