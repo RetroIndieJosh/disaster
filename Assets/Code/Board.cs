@@ -21,6 +21,19 @@ public class Board : MonoBehaviour
     [SerializeField] private bool m_autoAdvance = false;
     [SerializeField] private bool m_extendAlsoTurns = false;
     [SerializeField] private bool m_spreadAlsoTurns = false;
+    [SerializeField] private int m_fireSpeed = 2;
+    [SerializeField] private int m_fireMaxLength = 6;
+    [SerializeField] private int m_fireStayTurns = 2;
+    [SerializeField] private int m_waterSpeed = 2;
+    [SerializeField] private int m_waterMaxLength = 3;
+    [SerializeField] private int m_waterStayTurns = 4;
+
+    public int FireSpeed => m_fireSpeed;
+    public int FireMaxLength => m_fireMaxLength;
+    public int FireStayTurns => m_fireStayTurns;
+    public int WaterSpeed => m_waterSpeed;
+    public int WaterMaxLength => m_waterMaxLength;
+    public int WaterStayTurns => m_waterStayTurns;
 
     [Header("Board Setup")]
     [SerializeField] private List<Vector2Int> m_initialStonesBlack = new List<Vector2Int>();
@@ -280,6 +293,15 @@ public class Board : MonoBehaviour
     }
 
     public void NextTurn() {
+        var disasterList = new List<Disaster>();
+        foreach (var tile in m_tileMap) {
+            if (tile.Disaster != null && tile.Controller == null && disasterList.Contains(tile.Disaster) == false)
+                disasterList.Add(tile.Disaster);
+        }
+        Debug.Log($"Processing {disasterList.Count} disasters");
+        foreach (var disaster in disasterList)
+            disaster.UpdateDetachment();
+
         if (AnyBlinking) {
             StartCoroutine(WaitForBlinkToEnd(StartNextTurn));
             return;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CardActionWater : CardActionDisaster
 {
-    public CardActionWater() : base(DisasterType.Water, 1) {
+    public CardActionWater() : base(DisasterType.Water, Board.instance.WaterSpeed) {
         Color = Color.blue;
         Info = "Disaster ~ Water";
         Initial = "W";

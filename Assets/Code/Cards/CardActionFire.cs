@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CardActionFire : CardActionDisaster
 {
-    public CardActionFire() : base(DisasterType.Fire, 2) {
+    public CardActionFire() : base(DisasterType.Fire, Board.instance.FireSpeed) {
         Color = Color.red;
         Info = "Disaster ~ Fire";
         Initial = "F";

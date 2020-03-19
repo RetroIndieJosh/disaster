@@ -106,7 +106,7 @@ public class Player : MonoBehaviour
         var count = (m_cardsPlayed == -1) ? Board.instance.HandSize : m_cardsPlayed;
         if( m_deck.CardCount < count)
             count = m_deck.CardCount;
-        Debug.Log($"Draw {count} cards");
+        //Debug.Log($"Draw {count} cards");
         for (var i = 0; i < count; ++i) {
             var cardType = m_deck.Draw();
 
@@ -114,10 +114,10 @@ public class Player : MonoBehaviour
                 for (var k = 0; k < m_handVisual.Length; ++k) {
                     if (m_handVisual[k].CardType == null) {
                         m_handVisual[k].CardType = cardType;
-                        Debug.Log($"Drew {cardType} in visual slot {k}");
+                        //Debug.Log($"Drew {cardType} in visual slot {k}");
                         break;
-                    } else
-                        Debug.Log($"Card {k} is {m_handVisual[k].CardType}");
+                    } //else
+                        //Debug.Log($"Card {k} is {m_handVisual[k].CardType}");
                 } 
             }
         }

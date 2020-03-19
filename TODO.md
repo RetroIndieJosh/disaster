@@ -32,13 +32,13 @@ Wild (?) - purple
 
 ### Important
 
-- visual for the deadzone (outside tiles)
 - don't auto-advance on placement turn
 - allow change of disaster if trail >= 3
 - quelch fire if touching fire on two sides
 - disallow water/fire turning back on itself
 - wild card: select which card to copy, use that logic
 - resume matching disaster from any disaster tile
+- remove tiles from uncontrolled disasters after X turns
 
 ### Wishlist
 
@@ -48,3 +48,8 @@ Wild (?) - purple
 - remove duplicates from initial stones
 
 - CARD COUNT MUST BE 2n+3
+
+### Cleanup
+
+- use CardActionAdvance as base for Disaster
+- separate CardActionExtend classes into their own files

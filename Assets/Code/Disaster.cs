@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum DisasterType
 {
@@ -22,6 +23,7 @@ public enum Direction
     Southwest = 0x04 + 0x08
 }
 
+[System.Serializable]
 public class Disaster
 {
     public bool IsAlive => Head.HasControlledDisaster;
@@ -34,6 +36,7 @@ public class Disaster
 
     private List<BoardTile> m_tileList = new List<BoardTile>();
 
+    private int m_detachedTurns = 0;
     private int m_tailIndex = 0;
 
     public DisasterType DisasterType { get; } = DisasterType.Fire;
@@ -65,6 +68,24 @@ public class Disaster
             dir = Direction.South;
         Debug.Log($"Disaster dir: {dir}");
         Direction = dir;
+    }
+
+    public void UpdateDetachment() {
+        if (m_tileList == null)
+            return;
+        // clear anything that's been overwritten
+        m_tileList.RemoveAll(
+            tile => tile == null || tile.Disaster == null || tile.Disaster.DisasterType != DisasterType);
+        if (m_tileList.Count == 0)
+            return;
+
+        ++m_detachedTurns;
+        var stayTurns = (DisasterType == DisasterType.Fire)
+            ? Board.instance.FireStayTurns : Board.instance.WaterStayTurns;
+        if (m_detachedTurns > stayTurns) {
+            m_tileList[0].Clear();
+            m_tileList.RemoveAt(0);
+        }
     }
 
     private void StepAdvance() {
@@ -102,7 +123,8 @@ public class Disaster
             Head.Controller.ClearDisaster();
 
         // clear tail if too far
-        var tailLength = DisasterType == DisasterType.Fire ? 6 : 3;
+        var tailLength = (DisasterType == DisasterType.Fire)
+            ? Board.instance.FireMaxLength : Board.instance.WaterMaxLength;
         while (m_tileList.Count - m_tailIndex > tailLength) {
             Tail.Clear();
             Tail = null;

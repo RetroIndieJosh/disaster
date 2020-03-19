@@ -51,7 +51,7 @@ public class Card : GameElement
             var height = rectTrans.rect.height / 2;
             var pos = rectTrans.anchoredPosition;
             m_isCardActive = value;
-            Debug.Log($"Set card {name} " + (m_isCardActive ? "active" : "inactive"));
+            //Debug.Log($"Set card {name} " + (m_isCardActive ? "active" : "inactive"));
             pos.y = m_isCardActive ? Mathf.FloorToInt(height) / 2 : 0;
             if (Owner.Color == PlayerColor.White)
                 pos.y = -pos.y;
