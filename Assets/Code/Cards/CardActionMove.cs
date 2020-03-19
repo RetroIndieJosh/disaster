@@ -10,8 +10,9 @@ public class CardActionMove: CardAction
 
     public CardActionMove() : this(null) { }
     public CardActionMove(Player a_owner) : base(a_owner) {
-        Color = Color.white;
+        Color = new Color(1f, 0.8398f, 0f);
         Info = "Basic ~ Move";
+        Initial = "M";
     }
 
     public override void Activate() {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class CardAction {
+    public string Initial = "";
     public string Info = "";
 
     public Color Color {

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using TMPro;
 
 [RequireComponent(typeof(Button))]
 public class Card : GameElement
 {
+    [SerializeField] private TextMeshProUGUI m_labelTextMesh = null;
+
     public System.Type CardType {
         get => m_type;
         set {
@@ -34,7 +37,6 @@ public class Card : GameElement
     private CardAction m_action = null;
     private System.Type m_type = null;
     private bool m_isCardActive = false;
-    private BoardTile m_originTile = null;
 
     private void Activate() {
         if (m_action == null)
@@ -109,23 +111,26 @@ public class Card : GameElement
 
         m_button.interactable = m_action.IsPlayable;
         var colors = m_button.colors;
-        colors.normalColor = (m_action == null) ? Color.black : m_action.Color;
+        colors.highlightedColor = (m_action == null) ? Color.black : m_action.Color;
+        m_labelTextMesh.color = colors.highlightedColor;
         var r = colors.normalColor.r;
         var g = colors.normalColor.g;
         var b = colors.normalColor.b;
         var mult = 0.8f;
-        colors.highlightedColor = new Color(r * mult, g * mult, b * mult);
-        colors.selectedColor = new Color(r / mult, g / mult, b / mult);
+        colors.selectedColor = new Color(r * mult, g * mult, b * mult);
         m_button.colors = colors;
     }
 
     public void UpdateInfo() {
         m_infoText = "";
+        if (m_labelTextMesh != null)
+            m_labelTextMesh.text = "X";
         if (m_action == null)
             return;
         //m_infoText = $"Owner: {Owner.name}\n";
         m_infoText += m_action.Info;
         if (m_action.IsPlayable == false)
             m_infoText += "\n(unplayable)";
+        m_labelTextMesh.text = m_action.Initial;
     }
 }

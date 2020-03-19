@@ -55,6 +55,7 @@ public class CardActionSpread : CardActionAdvance
     public CardActionSpread(Player a_owner) : base(a_owner, 2) {
         Color = new Color(0.6f, 0.6f, 0.6f);
         Info = "Disaster ~ Spread (2)";
+        Initial = "S";
     }
 }
 

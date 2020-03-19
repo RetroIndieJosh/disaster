@@ -10,6 +10,7 @@ public class CardActionLife: CardAction
     public CardActionLife(Player a_owner) : base(a_owner) {
         Color = Color.green;
         Info = "Basic ~ Life";
+        Initial = "L";
     }
 
     public override void Activate() {
