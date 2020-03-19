@@ -25,7 +25,20 @@ public class BoardTile : GameElement
     }
 
     // TODO account for adjacent disasters (block but still controlled by none)
-    public bool HasAdjacentClearSpace => Board.instance.HasNeighborOrthogonal(x, y, PlayerColor.None);
+    public bool HasAdjacentDiagonalClearSpace(int a_distance) {
+        var neighbors = Board.instance.GetNeighborsDiagonal(x, y, a_distance);
+        foreach (var neighbor in neighbors)
+            if (neighbor.IsClear && neighbor.Disaster == null)
+                return true;
+        return false;
+    }
+    public bool HasAdjacentOrthogonalClearSpace(int a_distance) {
+        var neighbors = Board.instance.GetNeighborsOrthogonal(x, y, a_distance);
+        foreach (var neighbor in neighbors)
+            if (neighbor.IsClear && neighbor.Disaster == null)
+                return true;
+        return false;
+    }
 
     public Disaster Disaster {
         get => m_disaster;
@@ -42,7 +55,10 @@ public class BoardTile : GameElement
             m_controller = value;
             UpdateInfo();
             UpdateOverlay();
+            if (m_controller == null)
+                return;
             IsBlinking = true;
+            AudioSource.PlayClipAtPoint(Board.instance.SoundPlaceStone, Camera.main.transform.position);
         }
     }
 

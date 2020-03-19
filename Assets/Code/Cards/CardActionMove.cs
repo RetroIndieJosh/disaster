@@ -18,12 +18,15 @@ public class CardActionMove: CardAction
     public override void Activate() {
         if (m_target == null) {
             Board.instance.ToggleTiles((t) => {
-                return t.StoneColor == Owner.Color && t.HasAdjacentClearSpace;
+                return t.StoneColor == Owner.Color
+                    && (t.HasAdjacentOrthogonalClearSpace(2) || t.HasAdjacentDiagonalClearSpace(1));
+                ;
             });
             return;
         }
         Board.instance.ToggleTiles((t) => {
-            return t.IsAdjacentOrthogonalTo(m_target) && t.IsClear && t.IsEdge == false;
+            return (t.IsAdjacentDiagonalTo(m_target, 1) || t.IsAdjacentOrthogonalTo(m_target, 1) 
+                || t.IsAdjacentOrthogonalTo(m_target, 2)) && t.IsClear && t.IsEdge == false;
         });
     }
 

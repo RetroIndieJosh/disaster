@@ -64,14 +64,27 @@ public class Board : MonoBehaviour
     [SerializeField] private Sprite m_spriteDisasterWaterWhite = null;
     [SerializeField] private Sprite m_spriteDisasterWaterWhiteNeutral = null;
 
+    [Header("Sound")]
+    [SerializeField] private AudioClip m_soundFire = null;
+    [SerializeField] private AudioClip m_soundGameOver = null;
+    [SerializeField] private AudioClip m_soundPlaceStone = null;
+    [SerializeField] private AudioClip m_soundSelectCard = null;
+    [SerializeField] private AudioClip m_soundDeselectCard = null;
+    [SerializeField] private AudioClip m_soundTurnChange = null;
+    [SerializeField] private AudioClip m_soundWater = null;
+
     [Header("Prefabs")]
     [SerializeField] private Card m_cardPrefab = null;
     [SerializeField] private BoardTile m_tilePrefab = null;
 
+    public AudioClip SoundFire => m_soundFire;
+    public AudioClip SoundPlaceStone => m_soundPlaceStone;
+    public AudioClip SoundWater => m_soundWater;
+
     public bool ExtendAlsoTurns => m_extendAlsoTurns;
     public bool SpreadAlsoTurns => m_spreadAlsoTurns;
 
-    public float TileSize => (float)m_boardSizePixels / m_boardSizeTiles;
+    public int TileSize => Mathf.FloorToInt((float)m_boardSizePixels / m_boardSizeTiles);
     public Card CardPrefab => m_cardPrefab;
     public int HandSize => m_handSize;
     public Player ActivePlayer { get; private set; } = null;
@@ -115,12 +128,14 @@ public class Board : MonoBehaviour
         private get => m_activeCard;
         set {
             if( m_activeCard != null) {
+                AudioSource.PlayClipAtPoint(m_soundDeselectCard, Camera.main.transform.position);
                 m_activeCard.IsCardActive = false;
                 if (m_activeCard == value) {
                     m_activeCard = null;
                     return;
                 }
             }
+            AudioSource.PlayClipAtPoint(m_soundSelectCard, Camera.main.transform.position);
             m_activeCard = value;
             if (m_activeCard == null)
                 return;
@@ -217,12 +232,13 @@ public class Board : MonoBehaviour
     }
 
     public void EndGame() {
+        AudioSource.PlayClipAtPoint(m_soundGameOver, Camera.main.transform.position);
         var winner = "Tie";
         if (m_playerBlack.Score > m_playerWhite.Score)
             winner = "Black";
         else if (m_playerWhite.Score > m_playerBlack.Score)
             winner = "White";
-        InfoText = $"Game over! Winner: {winner}";
+        InfoText = $"Game over!\nWinner: {winner}";
         m_isGameOver = true;
     }
 
@@ -310,6 +326,7 @@ public class Board : MonoBehaviour
     }
 
     private void StartNextTurn() {
+        AudioSource.PlayClipAtPoint(m_soundTurnChange, Camera.main.transform.position);
         if (m_autoAdvance && ActivePlayer.ControlledDisaster != null)
             ActivePlayer.ControlledDisaster.Advance();
         ActivePlayer = (ActivePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;

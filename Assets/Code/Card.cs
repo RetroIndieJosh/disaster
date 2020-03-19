@@ -74,9 +74,6 @@ public class Card : GameElement
             m_action.Activate();
     }
 
-    private void SetDisasterDirection(Player a_player, BoardTile a_endTile) {
-    }
-
     private void Awake() {
         m_button = GetComponent<Button>();
     }

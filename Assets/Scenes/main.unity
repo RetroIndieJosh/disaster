@@ -1111,13 +1111,19 @@ MonoBehaviour:
   m_playerBlack: {fileID: 1990231393}
   m_playerWhite: {fileID: 1421387993}
   m_infoTextMesh: {fileID: 599586555}
-  m_boardSizeTiles: 8
+  m_boardSizeTiles: 7
   m_boardSizePixels: 600
   m_handSize: 5
   m_playPerTurn: 2
   m_autoAdvance: 1
   m_extendAlsoTurns: 1
   m_spreadAlsoTurns: 0
+  m_fireSpeed: 2
+  m_fireMaxLength: 6
+  m_fireStayTurns: 2
+  m_waterSpeed: 2
+  m_waterMaxLength: 3
+  m_waterStayTurns: 4
   m_initialStonesBlack:
   - {x: 3, y: 3}
   - {x: 3, y: 6}
@@ -1162,6 +1168,13 @@ MonoBehaviour:
     type: 3}
   m_spriteDisasterWaterWhiteNeutral: {fileID: 21300000, guid: a97489316922a5e4b918558edc5f08b5,
     type: 3}
+  m_soundFire: {fileID: 8300000, guid: 536d97dc423dc9a4da8eab3b16c344b8, type: 3}
+  m_soundGameOver: {fileID: 8300000, guid: 39aafc53ff2e91242b2d4f41bdac0ffd, type: 3}
+  m_soundPlaceStone: {fileID: 8300000, guid: 1420de687b0aa5b47809f0c7e4264709, type: 3}
+  m_soundSelectCard: {fileID: 8300000, guid: 2d258322ceb46ab40a6580356f028123, type: 3}
+  m_soundDeselectCard: {fileID: 8300000, guid: c2f9c52968451e645a77b4c07f47586c, type: 3}
+  m_soundTurnChange: {fileID: 8300000, guid: 342e4e39401043749b73c7d3957c5baf, type: 3}
+  m_soundWater: {fileID: 8300000, guid: 2f3bd0e8db8d302498b9fa405cfa0cf2, type: 3}
   m_cardPrefab: {fileID: 828228990, guid: 9030d3511d1bf20458ea4d6c918b3854, type: 3}
   m_tilePrefab: {fileID: 8633574164378416054, guid: 88621c6f132382f469bb411ba676885d,
     type: 3}

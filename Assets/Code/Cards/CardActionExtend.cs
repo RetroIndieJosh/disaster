@@ -47,6 +47,7 @@ public class CardActionExtend : CardActionAdvance
     public CardActionExtend(Player a_owner) : base(a_owner, 1) {
         Color = new Color(0.3f, 0.3f, 0.3f);
         Info = "Disaster ~ Extend (1)";
+        Initial = "E";
         m_alsoTurns = Board.instance.ExtendAlsoTurns;
     }
 }

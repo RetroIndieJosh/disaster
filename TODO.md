@@ -27,6 +27,9 @@ Wild (?) - purple
   for direction (very rare scenario)
 - extend says it's unplayable after disaster ends but can still play it
 - setting fire direction may be impossible in some scenarios leading to a softlock
+- extending fire from one step away asks for direction (don't ask for direction if it's gone into the dead zone)
+- life is playable if dead zone areas open (don't count)
+- move should go two?
 
 ## Features
 

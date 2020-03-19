@@ -53,6 +53,8 @@ public class CardActionDisaster: CardAction
                     return true;
                 m_stepsRemaining = (m_disaster.DisasterType == m_disasterType) ? 2 : 1;
             }
+            var sound = (m_disasterType == DisasterType.Fire) ? Board.instance.SoundFire : Board.instance.SoundWater;
+            AudioSource.PlayClipAtPoint(sound, Camera.main.transform.position);
             return false;
         }
         m_disaster.SetDirection(m_disaster.Head, a_tile);
