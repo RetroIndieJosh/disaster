@@ -19,8 +19,8 @@ public class CardActionMove: CardAction
         if (m_target == null) {
             Board.instance.ToggleTiles((t) => {
                 return t.StoneColor == Owner.Color
-                    && (t.HasAdjacentOrthogonalClearSpace(2) || t.HasAdjacentDiagonalClearSpace(1));
-                ;
+                    && (t.HasAdjacentOrthogonalClearSpace(2) || t.HasAdjacentOrthogonalClearSpace(1) 
+                    || t.HasAdjacentDiagonalClearSpace(1));
             });
             return;
         }

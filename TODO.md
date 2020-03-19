@@ -29,12 +29,12 @@ Wild (?) - purple
 - setting fire direction may be impossible in some scenarios leading to a softlock
 - extending fire from one step away asks for direction (don't ask for direction if it's gone into the dead zone)
 - life is playable if dead zone areas open (don't count)
-- move should go two?
 
 ## Features
 
 ### Important
 
+- auto-pass if no playable cards
 - don't auto-advance on placement turn
 - allow change of disaster if trail >= 3
 - quelch fire if touching fire on two sides

@@ -28,14 +28,14 @@ public class BoardTile : GameElement
     public bool HasAdjacentDiagonalClearSpace(int a_distance) {
         var neighbors = Board.instance.GetNeighborsDiagonal(x, y, a_distance);
         foreach (var neighbor in neighbors)
-            if (neighbor.IsClear && neighbor.Disaster == null)
+            if (neighbor.IsClear && neighbor.Disaster == null && neighbor.IsEdge == false)
                 return true;
         return false;
     }
     public bool HasAdjacentOrthogonalClearSpace(int a_distance) {
         var neighbors = Board.instance.GetNeighborsOrthogonal(x, y, a_distance);
         foreach (var neighbor in neighbors)
-            if (neighbor.IsClear && neighbor.Disaster == null)
+            if (neighbor.IsClear && neighbor.Disaster == null && neighbor.IsEdge == false)
                 return true;
         return false;
     }
