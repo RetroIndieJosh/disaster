@@ -24,19 +24,16 @@ Wild (?) - purple
 ## Bugs
 
 - after extending/spreading to a stop point, shouldn't ask for direction (ret true)
-- remove duplicates from initial stones
+        - does this even happen anymore? need water on water to test?
 - extend says it's unplayable after disaster ends but it's still playable
 
 ## Features
 
-### Minimum Viable
-
-- IsPlayable implementation
-        - Board.HasStone(color)
-                - also for elimination game over
-
 ### Important
 
+- delay end of turn to show auto advance isn't part of last played card
+        - maybe a general timer on each advancement taken?
+- don't auto-advance on placement turn
 - disable change of disaster if trail < 3
 - quelch fire if touching fire on two sides
 - disallow water/fire turning back on itself
@@ -46,5 +43,7 @@ Wild (?) - purple
 
 - plague card: select placement (occupied), select facing
 - card info from text file
+- error checking on initial stones
+- remove duplicates from initial stones
 
 - CARD COUNT MUST BE 2n+3

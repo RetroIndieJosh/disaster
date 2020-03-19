@@ -164,7 +164,7 @@ public class Board : MonoBehaviour
     }
 
     public bool HasNeighborOrthogonal(int a_x, int a_y, PlayerColor a_color, int a_distance = 1) {
-        var list = GetNeighborsDiagonal(a_x, a_y, a_distance);
+        var list = GetNeighborsOrthogonal(a_x, a_y, a_distance);
         if (list == null)
             return false;
         foreach (var tile in list) {
@@ -175,13 +175,14 @@ public class Board : MonoBehaviour
     }
 
     public void EndGame() {
-        UpdateScore();
         var winner = "Tie";
         if (m_playerBlack.Score > m_playerWhite.Score)
             winner = "Black";
         else if (m_playerWhite.Score > m_playerBlack.Score)
             winner = "White";
         InfoText = $"Game over! Winner: {winner}";
+        PlayerBlack.CardsEnabled = false;
+        PlayerWhite.CardsEnabled = false;
         m_isGameOver = true;
     }
 
@@ -256,7 +257,9 @@ public class Board : MonoBehaviour
             m_activePlayer.ControlledDisaster.Advance();
         m_activePlayer = (m_activePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;
         Debug.Log($"{m_activePlayer}'s turn");
-        m_activePlayer.StartTurn();
+        UpdateScore();
+        if(m_isGameOver == false)
+            m_activePlayer.StartTurn();
     }
 
     public void UpdateScore() {
@@ -271,6 +274,9 @@ public class Board : MonoBehaviour
 
         m_playerBlack.Score = blackScore;
         m_playerWhite.Score = whiteScore;
+
+        if (blackScore == 0 || whiteScore == 0)
+            EndGame();
     }
 
 

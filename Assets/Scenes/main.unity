@@ -1153,11 +1153,15 @@ MonoBehaviour:
     type: 3}
   m_size: 6
   m_initialStonesBlack:
-  - {x: 0, y: 1}
-  - {x: 1, y: 0}
   - {x: 1, y: 1}
+  - {x: 4, y: 1}
+  - {x: 1, y: 4}
+  - {x: 4, y: 4}
   m_initialStonesWhite:
   - {x: 0, y: 0}
+  - {x: 0, y: 5}
+  - {x: 5, y: 0}
+  - {x: 5, y: 5}
 --- !u!1 &924205116
 GameObject:
   m_ObjectHideFlags: 0
@@ -1642,11 +1646,11 @@ MonoBehaviour:
   m_color: 1
   m_deckTextMesh: {fileID: 497708580}
   m_scoreTextMesh: {fileID: 2147049678}
-  m_cardMoveCount: 4
-  m_cardLifeCount: 4
-  m_cardExtendCount: 4
+  m_cardMoveCount: 0
+  m_cardLifeCount: 0
+  m_cardExtendCount: 0
   m_cardWildCount: 0
-  m_cardDisasterCount: 2
+  m_cardDisasterCount: 8
 --- !u!224 &1990231394
 RectTransform:
   m_ObjectHideFlags: 0

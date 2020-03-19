@@ -98,6 +98,9 @@ public class Disaster
         next.Direction = Head.Direction;
         m_tileList.Add(next);
 
+        if (Head.NextTile == null)
+            Head.Controller.ClearDisaster();
+
         // clear tail if too far
         var tailLength = DisasterType == DisasterType.Fire ? 6 : 3;
         while (m_tileList.Count - m_tailIndex > tailLength) {
