@@ -1111,7 +1111,7 @@ MonoBehaviour:
   m_playerBlack: {fileID: 1990231393}
   m_playerWhite: {fileID: 1421387993}
   m_infoTextMesh: {fileID: 599586555}
-  m_boardSizeTiles: 7
+  m_boardSizeTiles: 5
   m_boardSizePixels: 600
   m_handSize: 5
   m_playPerTurn: 2
@@ -1125,15 +1125,15 @@ MonoBehaviour:
   m_waterMaxLength: 3
   m_waterStayTurns: 4
   m_initialStonesBlack:
+  - {x: 1, y: 1}
+  - {x: 2, y: 2}
   - {x: 3, y: 3}
-  - {x: 3, y: 6}
-  - {x: 6, y: 3}
   - {x: 6, y: 6}
   m_initialStonesWhite:
-  - {x: 1, y: 1}
-  - {x: 2, y: 1}
   - {x: 1, y: 2}
-  - {x: 2, y: 2}
+  - {x: 2, y: 1}
+  - {x: 3, y: 2}
+  - {x: 2, y: 3}
   m_timeAllBlinks: 1
   m_blinkCount: 3
   m_spriteStoneBlack: {fileID: 21300000, guid: 7671114442aadbf468f25dc5f3ff1be6, type: 3}
@@ -1445,7 +1445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f70846dca01c3749a54ea426f642f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isHuman: 1
+  m_isHuman: 0
   m_color: 2
   m_deckTextMesh: {fileID: 118704224}
   m_scoreTextMesh: {fileID: 1833204599}
@@ -1662,11 +1662,11 @@ MonoBehaviour:
   m_color: 1
   m_deckTextMesh: {fileID: 497708580}
   m_scoreTextMesh: {fileID: 2147049678}
-  m_cardMoveCount: 4
-  m_cardLifeCount: 4
-  m_cardExtendCount: 4
+  m_cardMoveCount: 8
+  m_cardLifeCount: 8
+  m_cardExtendCount: 0
   m_cardWildCount: 0
-  m_cardDisasterCount: 2
+  m_cardDisasterCount: 0
 --- !u!224 &1990231394
 RectTransform:
   m_ObjectHideFlags: 0

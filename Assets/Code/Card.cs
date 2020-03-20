@@ -27,6 +27,8 @@ public class Card : GameElement
         }
     }
 
+    public bool IsPlayable => m_button.interactable;
+
     public Player Owner {
         private get; set;
     }

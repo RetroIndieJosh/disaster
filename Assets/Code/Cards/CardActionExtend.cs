@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class CardActionAdvance: CardAction
 {
     public override bool IsPlayable => Board.instance.HasControlledDisaster;
@@ -46,7 +47,7 @@ public class CardActionExtend : CardActionAdvance
     public CardActionExtend() : this(null) { }
     public CardActionExtend(Player a_owner) : base(a_owner, 1) {
         Color = new Color(0.3f, 0.3f, 0.3f);
-        Info = "Disaster ~ Extend (1)";
+        Info = "Disaster ~ Extend (1)\nAdvance a disaster one step";
         Initial = "E";
         m_alsoTurns = Board.instance.ExtendAlsoTurns;
     }
@@ -57,7 +58,7 @@ public class CardActionSpread : CardActionAdvance
     public CardActionSpread() : this(null) { }
     public CardActionSpread(Player a_owner) : base(a_owner, 2) {
         Color = new Color(0.6f, 0.6f, 0.6f);
-        Info = "Disaster ~ Spread (2)";
+        Info = "Disaster ~ Spread (2)\nAdvance a disaster two steps";
         Initial = "S";
         m_alsoTurns = Board.instance.SpreadAlsoTurns;
     }

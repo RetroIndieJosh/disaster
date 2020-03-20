@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public abstract class CardAction {
     public string Initial = "";
     public string Info = "";

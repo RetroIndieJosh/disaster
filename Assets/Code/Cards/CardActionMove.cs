@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class CardActionMove: CardAction
 {
     public override bool IsPlayable => Board.instance.HasClearSpace;
@@ -11,7 +12,7 @@ public class CardActionMove: CardAction
     public CardActionMove() : this(null) { }
     public CardActionMove(Player a_owner) : base(a_owner) {
         Color = new Color(1f, 0.8398f, 0f);
-        Info = "Basic ~ Move";
+        Info = "Basic ~ Move\nMove a stone up to two steps or one diagonal";
         Initial = "M";
     }
 

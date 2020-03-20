@@ -81,6 +81,8 @@ public class Board : MonoBehaviour
     public AudioClip SoundPlaceStone => m_soundPlaceStone;
     public AudioClip SoundWater => m_soundWater;
 
+    public bool IsGameOver { get; private set; } = false;
+
     public bool ExtendAlsoTurns => m_extendAlsoTurns;
     public bool SpreadAlsoTurns => m_spreadAlsoTurns;
 
@@ -110,9 +112,11 @@ public class Board : MonoBehaviour
         }
     }
 
+    public List<BoardTile> PlayableTiles { get; } = new List<BoardTile>();
+
     public string InfoText {
         set {
-            if (m_isGameOver)
+            if (IsGameOver)
                 return;
             m_infoTextMesh.text = value;
         }
@@ -122,7 +126,7 @@ public class Board : MonoBehaviour
 
     private BoardTile[,] m_tileMap = null;
     private int m_tileSize = 0;
-    public int ActiveTileCount { get; private set; } = 0;
+    public int ActiveTileCount => PlayableTiles.Count;
 
     public Card ActiveCard {
         private get => m_activeCard;
@@ -239,24 +243,23 @@ public class Board : MonoBehaviour
         else if (m_playerWhite.Score > m_playerBlack.Score)
             winner = "White";
         InfoText = $"Game over!\nWinner: {winner}";
-        m_isGameOver = true;
+        IsGameOver = true;
     }
 
-    private bool m_isGameOver = false;
-
     public void ToggleTiles(System.Func<BoardTile, bool> a_isInteractable) {
-        ActiveTileCount = 0;
+        PlayableTiles.Clear();
         for (var y = 0; y < m_boardSizeTiles; ++y) {
             for (var x = 0; x < m_boardSizeTiles; ++x) {
                 var button = m_tileMap[x, y].GetComponent<Button>();
                 button.interactable = a_isInteractable(m_tileMap[x, y]);
                 if (button.interactable)
-                    ++ActiveTileCount;
+                    PlayableTiles.Add(m_tileMap[x, y]);
             }
         }
     }
 
     public void ResetTiles() {
+        PlayableTiles.Clear();
         ToggleTiles((t) => {
             return true;
         });
@@ -319,6 +322,7 @@ public class Board : MonoBehaviour
             disaster.UpdateDetachment();
 
         if (AnyBlinking) {
+            StopAllCoroutines();
             StartCoroutine(WaitForBlinkToEnd(StartNextTurn));
             return;
         }
@@ -326,15 +330,18 @@ public class Board : MonoBehaviour
     }
 
     private void StartNextTurn() {
+        if (ActivePlayer == null) {
+            StopAllCoroutines();
+            StartCoroutine(WaitForBlinkToEnd(StartNextTurn));
+            return;
+        }
         AudioSource.PlayClipAtPoint(m_soundTurnChange, Camera.main.transform.position);
         if (m_autoAdvance && ActivePlayer.ControlledDisaster != null)
             ActivePlayer.ControlledDisaster.Advance();
         ActivePlayer = (ActivePlayer == m_playerBlack) ? m_playerWhite : m_playerBlack;
         Debug.Log($"{ActivePlayer}'s turn");
         UpdateScore();
-        EnableInput();
-        if(m_isGameOver == false)
-            ActivePlayer.StartTurn();
+        ActivePlayer.StartTurn();
     }
 
     public IEnumerator WaitForBlinkToEnd(UnityAction a_onEnd = null) {
@@ -345,6 +352,8 @@ public class Board : MonoBehaviour
         if (a_onEnd != null)
             a_onEnd.Invoke();
     }
+
+    private bool m_gameStarted = false;
 
     public void UpdateScore() {
         var blackScore = 0;
@@ -358,9 +367,26 @@ public class Board : MonoBehaviour
 
         m_playerBlack.Score = blackScore;
         m_playerWhite.Score = whiteScore;
+    }
 
-        if (blackScore == 0 || whiteScore == 0 || HasClearSpace == false)
+    public void CheckGameOver() {
+        if (m_gameStarted == false)
+            return;
+
+        if (m_playerBlack.Score == 0 ) {
+            Debug.Log("Game over: black eliminated");
             EndGame();
+        }
+
+        if (m_playerWhite.Score == 0 ) {
+            Debug.Log("Game over: white eliminated");
+            EndGame();
+        }
+
+        if (m_playerBlack.HasPlayableCard == false && m_playerWhite.HasPlayableCard == false) {
+            Debug.Log("Game over: no playable cards");
+            EndGame();
+        }
     }
 
     private void Awake() {
@@ -383,10 +409,16 @@ public class Board : MonoBehaviour
 
         PlaceInitialStones();
         UpdateScore();
+
+        m_gameStarted = true;
+    }
+
+    private bool IsCoordinateInside(int a_x, int a_y) {
+        return a_x >= 0 && a_y >= 0 && a_x < m_boardSizeTiles && a_y < m_boardSizeTiles;
     }
 
     private bool TileMatch(int a_x, int a_y, PlayerColor a_color) {
-        return a_x >= 0 && a_y >= 0 && a_x < m_boardSizeTiles && a_y < m_boardSizeTiles && m_tileMap[a_x, a_y].StoneColor == a_color;
+        return IsCoordinateInside(a_x, a_y) && m_tileMap[a_x, a_y].StoneColor == a_color;
     }
 
     private void CreateTileButtons() {
@@ -414,10 +446,16 @@ public class Board : MonoBehaviour
     }
 
     private void PlaceInitialStones() {
-        foreach (var coord in m_initialStonesBlack)
+        foreach (var coord in m_initialStonesBlack) {
+            if (IsCoordinateInside(coord.x, coord.y) == false)
+                continue;
             m_tileMap[coord.x, coord.y].Controller = m_playerBlack;
-        foreach (var coord in m_initialStonesWhite)
+        }
+        foreach (var coord in m_initialStonesWhite) {
+            if (IsCoordinateInside(coord.x, coord.y) == false)
+                continue;
             m_tileMap[coord.x, coord.y].Controller = m_playerWhite;
+        }
         StartCoroutine(WaitForBlinkToEnd());
     }
 

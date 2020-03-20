@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class CardActionLife: CardAction
 {
     public override bool IsPlayable => Board.instance.HasClearSpace;
@@ -9,7 +10,7 @@ public class CardActionLife: CardAction
     public CardActionLife() : this(null) { }
     public CardActionLife(Player a_owner) : base(a_owner) {
         Color = Color.green;
-        Info = "Basic ~ Life";
+        Info = "Basic ~ Life\nCreate a new stone adjacent to an existing one";
         Initial = "L";
     }
 

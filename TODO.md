@@ -28,15 +28,20 @@ Wild (?) - purple
 - extend says it's unplayable after disaster ends but can still play it
 - setting fire direction may be impossible in some scenarios leading to a softlock
 - extending fire from one step away asks for direction (don't ask for direction if it's gone into the dead zone)
-- life is playable if dead zone areas open (don't count)
 
 ## Features
 
+### Top
+
+- opponent AI (vs computer mode)
+- title menu: title/credits + vs computer, vs player, quit
+- allow change of disaster if trail >= 3
+- only one step for setting direction
+
 ### Important
 
-- auto-pass if no playable cards
+- text format for initial layout (to prepare for puzzles)
 - don't auto-advance on placement turn
-- allow change of disaster if trail >= 3
 - quelch fire if touching fire on two sides
 - disallow water/fire turning back on itself
 - wild card: select which card to copy, use that logic
@@ -45,6 +50,8 @@ Wild (?) - purple
 
 ### Wishlist
 
+- puzzle mode: win with limited turns
+- tutorial as series of puzzles
 - plague card: select placement (occupied), select facing
 - card info from text file
 - error checking on initial stones
@@ -56,3 +63,4 @@ Wild (?) - purple
 
 - use CardActionAdvance as base for Disaster
 - separate CardActionExtend classes into their own files
+- separate check for end of game for score vs no playable cards (see TODO in Board)

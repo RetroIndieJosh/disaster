@@ -46,10 +46,17 @@ public class Player : MonoBehaviour
 
     public bool CardsEnabled {
         set {
-            if (m_isHuman == false)
-                return;
-            foreach (var card in m_handVisual)
+            var cardCount = 0;
+            foreach (var card in m_handVisual) {
                 card.UpdatePlayable(value);
+                if (card.CardType != null)
+                    ++cardCount;
+            }
+            if (value && cardCount == Board.instance.HandSize) {
+                Board.instance.CheckGameOver();
+                if (HasPlayableCard == false)
+                    EndTurn();
+            }
         }
     }
 
@@ -73,32 +80,81 @@ public class Player : MonoBehaviour
         ++m_deadCount;
     }
 
+    public bool HasPlayableCard {
+        get {
+            foreach (var card in m_handVisual)
+                if (card.IsPlayable)
+                    return true;
+            return false;
+        }
+    }
+
     public void PlayedCard() {
         ++m_cardsPlayed;
         UpdateHand();
-        Board.instance.UpdateScore();
+        if (Board.instance.IsGameOver)
+            return;
         if (m_cardsPlayed >= Board.instance.PlayPerTurn) {
+            EndTurn();
+            return;
+        }
+        // not end of turn, update score (and check for game over due to no playable cards)
+        // TODO separate game over check for score vs no playable
+        Board.instance.UpdateScore();
+        if (HasPlayableCard == false) {
             EndTurn();
             return;
         }
         StartCoroutine(Board.instance.WaitForBlinkToEnd());
     }
 
-    private void UpdateHand() {
-        foreach (var card in m_handVisual)
+    private void UpdateHand(bool a_enable=true) {
+        foreach (var card in m_handVisual) {
             card.UpdateInfo();
+            card.UpdatePlayable(a_enable);
+        }
     }
 
     public void StartTurn() {
-        DrawCards();
-        if (m_isHuman)
-            UpdateHand();
-        else
-            // TODO AI here
-            EndTurn();
+        DrawCards(true);
+        if (m_isHuman == false)
+            StartCoroutine(RunAi());
     }
 
-    private void DrawCards() {
+    private IEnumerator RunAi() {
+        for (var i = 0; i < Board.instance.PlayPerTurn; i++) {
+            var cardList = new List<Card>();
+            cardList.AddRange(m_handVisual);
+            cardList.RemoveAll(Card => Card.IsPlayable == false);
+            if (cardList.Count == 0)
+                yield break;
+            var k = Random.Range(0, cardList.Count);
+            var card = cardList[k];
+            card.IsCardActive = true;
+            Debug.Log($"AI: Activate {card}");
+            yield return new WaitForSeconds(Board.instance.BlinkTimeTotal);
+
+            // select start tile
+            if (Board.instance.ActiveTileCount == 0)
+                continue;
+            var m = Random.Range(0, Board.instance.ActiveTileCount);
+            var tile = Board.instance.PlayableTiles[m];
+            card.Play(tile);
+            Debug.Log($"AI: Play {card} on {tile}");
+            yield return new WaitForSeconds(Board.instance.BlinkTimeTotal * 1.5f);
+
+            // select second tile
+            if (Board.instance.ActiveTileCount == 0)
+                continue;
+            var o = Random.Range(0, Board.instance.ActiveTileCount);
+            var tile2 = Board.instance.PlayableTiles[o];
+            card.Play(tile2);
+            Debug.Log($"AI: Play #2 {card} on {tile2}");
+            yield return new WaitForSeconds(Board.instance.BlinkTimeTotal * 1.5f);
+        }
+    }
+
+    private void DrawCards(bool a_enable) {
         if (m_deck.CardCount == 0) {
             Board.instance.EndGame();
             return;
@@ -110,15 +166,13 @@ public class Player : MonoBehaviour
         for (var i = 0; i < count; ++i) {
             var cardType = m_deck.Draw();
 
-            if (m_isHuman) {
-                for (var k = 0; k < m_handVisual.Length; ++k) {
-                    if (m_handVisual[k].CardType == null) {
-                        m_handVisual[k].CardType = cardType;
-                        //Debug.Log($"Drew {cardType} in visual slot {k}");
-                        break;
-                    } //else
-                        //Debug.Log($"Card {k} is {m_handVisual[k].CardType}");
-                } 
+            for (var k = 0; k < m_handVisual.Length; ++k) {
+                if (m_handVisual[k].CardType == null) {
+                    m_handVisual[k].CardType = cardType;
+                    //Debug.Log($"Drew {cardType} in visual slot {k}");
+                    break;
+                } //else
+                  //Debug.Log($"Card {k} is {m_handVisual[k].CardType}");
             }
         }
         m_cardsPlayed = 0;
@@ -126,9 +180,12 @@ public class Player : MonoBehaviour
         m_deckTextMesh.text = (m_deck.CardCount == 0) 
             ? $"Last turn!" 
             : $"Deck: {m_deck.CardCount}";
+
+        UpdateHand(a_enable);
     }
 
     public void EndTurn() {
+        Debug.Log("End turn");
         Board.instance.NextTurn();
     }
 
@@ -154,10 +211,11 @@ public class Player : MonoBehaviour
         InitializeVisualHand();
     }
 
-    private void InitializeVisualHand() {
-        if (m_isHuman == false)
-            return;
+    private void Start() {
+        DrawCards(false);
+    }
 
+    private void InitializeVisualHand() {
         m_handVisual = new Card[Board.instance.HandSize];
         var pos = Vector2Int.zero;
         var cardPrefab = Board.instance.CardPrefab;

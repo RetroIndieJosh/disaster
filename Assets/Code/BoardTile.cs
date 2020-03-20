@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BoardTile : GameElement
@@ -102,6 +104,11 @@ public class BoardTile : GameElement
 
     public bool HasAdjacentOrthogonalStone(Player a_player) {
         return Board.instance.HasNeighborOrthogonal(x, y, a_player.Color) && IsClear;
+    }
+
+    public void Click() {
+        //GetComponent<Button>().Select();
+        ExecuteEvents.Execute(gameObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
     }
 
     private Direction m_direction = Direction.None;

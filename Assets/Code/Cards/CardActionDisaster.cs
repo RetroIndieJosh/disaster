@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class CardActionDisaster: CardAction
 {
     private DisasterType m_disasterType = DisasterType.Water;
@@ -43,7 +44,7 @@ public class CardActionDisaster: CardAction
     public override bool Execute(BoardTile a_tile) {
         if (m_disaster == null) {
             if (a_tile.Disaster == null) {
-                Owner.CreateDisaster(m_disasterType, a_tile);
+                CreateDisaster(m_disasterType, a_tile);
                 m_disaster = Owner.ControlledDisaster;
                 m_stepsRemaining = 1;
             } else {
