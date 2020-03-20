@@ -67,6 +67,8 @@ public class Card : GameElement
     }
 
     public void Play(BoardTile a_tile) {
+        if (m_action == null)
+            return;
         var done = m_action.Execute(a_tile);
         if (done) {
             Board.instance.ActiveCard = null;

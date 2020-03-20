@@ -33,8 +33,7 @@ Wild (?) - purple
 
 ### Top
 
-- opponent AI (vs computer mode)
-- title menu: title/credits + vs computer, vs player, quit
+- get cpu to play on first turn
 - allow change of disaster if trail >= 3
 - only one step for setting direction
 

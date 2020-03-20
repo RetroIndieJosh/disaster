@@ -46,19 +46,19 @@ public class CardActionExtend : CardActionAdvance
 {
     public CardActionExtend() : this(null) { }
     public CardActionExtend(Player a_owner) : base(a_owner, 1) {
-        Color = new Color(0.3f, 0.3f, 0.3f);
-        Info = "Disaster ~ Extend (1)\nAdvance a disaster one step";
+        Color = new Color(0.75f, 0.75f, 0.75f);
+        Info = "Disaster ~ Extend (1)\nAdvance a disaster one step\nTurn on advance";
         Initial = "E";
         m_alsoTurns = Board.instance.ExtendAlsoTurns;
     }
 }
-    
+
 public class CardActionSpread : CardActionAdvance
 {
     public CardActionSpread() : this(null) { }
     public CardActionSpread(Player a_owner) : base(a_owner, 2) {
-        Color = new Color(0.6f, 0.6f, 0.6f);
-        Info = "Disaster ~ Spread (2)\nAdvance a disaster two steps";
+        Color = Color.gray;
+        Info = "Disaster ~ Spread (2)\nAdvance a disaster two steps\nNo turn on advance";
         Initial = "S";
         m_alsoTurns = Board.instance.SpreadAlsoTurns;
     }

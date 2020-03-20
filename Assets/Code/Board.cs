@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Board : MonoBehaviour
 {
@@ -227,6 +228,8 @@ public class Board : MonoBehaviour
 
     public void EnableInput() {
         DisableInput();
+        if (IsGameOver)
+            return;
         ActivePlayer.CardsEnabled = true;
     }
 
@@ -242,7 +245,7 @@ public class Board : MonoBehaviour
             winner = "Black";
         else if (m_playerWhite.Score > m_playerBlack.Score)
             winner = "White";
-        InfoText = $"Game over!\nWinner: {winner}";
+        InfoText = $"Game over!\nWinner: {winner}\nRight-click anywhere to restart\nQ to quit";
         IsGameOver = true;
     }
 
@@ -355,6 +358,15 @@ public class Board : MonoBehaviour
 
     private bool m_gameStarted = false;
 
+    private void Update() {
+        if (m_gameStarted == false)
+            InfoText = "Disaster by Joshua McLean\nFor 8 Bits to Infinity Duality Jam\n(c)2020";
+        if (Input.GetMouseButtonDown(1))
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (Input.GetKeyDown(KeyCode.Q))
+            Application.Quit();
+    }
+
     public void UpdateScore() {
         var blackScore = 0;
         var whiteScore = 0;
@@ -400,9 +412,26 @@ public class Board : MonoBehaviour
         m_tileSize = Mathf.FloorToInt(rect.width);
     }
 
-    private void Start() {
+    public void StartGame(int a_mode) {
         m_tileMap = new BoardTile[m_boardSizeTiles, m_boardSizeTiles];
         CreateTileButtons();
+
+        if (a_mode == 0) {
+            m_playerBlack.IsHuman = true;
+            m_playerWhite.IsHuman = true;
+        } else if (a_mode == 1) {
+            m_playerBlack.IsHuman = true;
+            m_playerWhite.IsHuman = false;
+        } else if (a_mode == 2) {
+            m_playerBlack.IsHuman = false;
+            m_playerWhite.IsHuman = true;
+        } else {
+            m_playerBlack.IsHuman = false;
+            m_playerWhite.IsHuman = false;
+        }
+
+        m_playerBlack.DrawCards(false);
+        m_playerWhite.DrawCards(false);
 
         ActivePlayer = m_playerBlack;
         ActivePlayer.StartTurn();

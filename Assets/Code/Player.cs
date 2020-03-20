@@ -13,7 +13,10 @@ public enum PlayerColor
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private bool m_isHuman = true;
+    public bool IsHuman {
+        private get;
+        set;
+    } = false;
     [SerializeField] private PlayerColor m_color = PlayerColor.Black;
 
     [Header("UI")]
@@ -92,9 +95,14 @@ public class Player : MonoBehaviour
     public void PlayedCard() {
         ++m_cardsPlayed;
         UpdateHand();
+        StartCoroutine(Board.instance.WaitForBlinkToEnd(CheckEndTurn));
+    }
+
+    private void CheckEndTurn() {
         if (Board.instance.IsGameOver)
             return;
         if (m_cardsPlayed >= Board.instance.PlayPerTurn) {
+            Debug.Log("Played enough cards");
             EndTurn();
             return;
         }
@@ -102,10 +110,10 @@ public class Player : MonoBehaviour
         // TODO separate game over check for score vs no playable
         Board.instance.UpdateScore();
         if (HasPlayableCard == false) {
+            Debug.Log("No playable cards");
             EndTurn();
             return;
         }
-        StartCoroutine(Board.instance.WaitForBlinkToEnd());
     }
 
     private void UpdateHand(bool a_enable=true) {
@@ -117,11 +125,15 @@ public class Player : MonoBehaviour
 
     public void StartTurn() {
         DrawCards(true);
-        if (m_isHuman == false)
+        m_cardsPlayed = 0;
+        Board.instance.CheckGameOver();
+        if (IsHuman == false)
             StartCoroutine(RunAi());
     }
 
     private IEnumerator RunAi() {
+        Board.instance.InfoText = "AI is thinking...";
+        yield return new WaitForSeconds(Board.instance.BlinkTimeTotal * 1.5f);
         for (var i = 0; i < Board.instance.PlayPerTurn; i++) {
             var cardList = new List<Card>();
             cardList.AddRange(m_handVisual);
@@ -132,6 +144,7 @@ public class Player : MonoBehaviour
             var card = cardList[k];
             card.IsCardActive = true;
             Debug.Log($"AI: Activate {card}");
+            Board.instance.InfoText = "AI is thinking...";
             yield return new WaitForSeconds(Board.instance.BlinkTimeTotal);
 
             // select start tile
@@ -141,6 +154,7 @@ public class Player : MonoBehaviour
             var tile = Board.instance.PlayableTiles[m];
             card.Play(tile);
             Debug.Log($"AI: Play {card} on {tile}");
+            Board.instance.InfoText = "AI is thinking...";
             yield return new WaitForSeconds(Board.instance.BlinkTimeTotal * 1.5f);
 
             // select second tile
@@ -150,11 +164,15 @@ public class Player : MonoBehaviour
             var tile2 = Board.instance.PlayableTiles[o];
             card.Play(tile2);
             Debug.Log($"AI: Play #2 {card} on {tile2}");
+            Board.instance.InfoText = "AI is thinking...";
             yield return new WaitForSeconds(Board.instance.BlinkTimeTotal * 1.5f);
+
+            if (HasPlayableCard == false)
+                yield break;
         }
     }
 
-    private void DrawCards(bool a_enable) {
+    public void DrawCards(bool a_enable) {
         if (m_deck.CardCount == 0) {
             Board.instance.EndGame();
             return;
@@ -175,7 +193,6 @@ public class Player : MonoBehaviour
                   //Debug.Log($"Card {k} is {m_handVisual[k].CardType}");
             }
         }
-        m_cardsPlayed = 0;
 
         m_deckTextMesh.text = (m_deck.CardCount == 0) 
             ? $"Last turn!" 
@@ -185,6 +202,7 @@ public class Player : MonoBehaviour
     }
 
     public void EndTurn() {
+        UpdateHand(false);
         Debug.Log("End turn");
         Board.instance.NextTurn();
     }
@@ -209,10 +227,6 @@ public class Player : MonoBehaviour
 
         m_deck.Shuffle();
         InitializeVisualHand();
-    }
-
-    private void Start() {
-        DrawCards(false);
     }
 
     private void InitializeVisualHand() {
